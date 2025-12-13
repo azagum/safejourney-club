@@ -78,7 +78,7 @@ app.get("/api/hotels/search", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () =>
   console.log(`Safe Journey API running on ${PORT}`)
 );
