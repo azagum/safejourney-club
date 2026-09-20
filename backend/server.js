@@ -8,7 +8,7 @@ app.use(express.json());
 
 const AMADEUS_CLIENT_ID = process.env.AMADEUS_CLIENT_ID;
 const AMADEUS_CLIENT_SECRET = process.env.AMADEUS_CLIENT_SECRET;
-const AMADEUS_BASE = "https://test.api.amadeus.com";
+const AMADEUS_BASE = "https://api.amadeus.com";
 
 let tokenCache = {
   accessToken: null,
@@ -48,33 +48,41 @@ async function getAccessToken() {
 app.get("/api/hotels/search", async (req, res) => {
   try {
     const { city, checkIn, checkOut, adults = 2 } = req.query;
-
-    if (!city || !checkIn || !checkOut) {
-      return res.status(400).json({ error: "Missing parameters" });
-    }
-
     const token = await getAccessToken();
 
-    const url =
+    // 1) hotelIds by city
+    const hotelsRes = await fetch(
+      `${AMADEUS_BASE}/v1/reference-data/locations/hotels/by-city?cityCode=${city}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    const hotelsJson = await hotelsRes.json();
+
+    const hotelIds = (hotelsJson?.data || [])
+      .slice(0, 10)
+      .map(h => h.hotelId)
+      .join(",");
+
+    if (!hotelIds) {
+      return res.json({ data: [] });
+    }
+
+    // 2) offers by hotelIds (v3)
+    const offersUrl =
       `${AMADEUS_BASE}/v3/shopping/hotel-offers` +
-      `?cityCode=${city}` +
+      `?hotelIds=${hotelIds}` +
       `&checkInDate=${checkIn}` +
       `&checkOutDate=${checkOut}` +
-      `&adults=${adults}` +
-      `&roomQuantity=1` +
-      `&paymentPolicy=NONE` +
-      `&bestRateOnly=true`;
+      `&adults=${adults}`;
 
-    const response = await fetch(url, {
+    const offersRes = await fetch(offersUrl, {
       headers: { Authorization: `Bearer ${token}` },
     });
+    const offersJson = await offersRes.json();
 
-    const data = await response.json();
-
-    res.json(data);
+    res.json(offersJson);
   } catch (e) {
-    console.error(e);
-    res.status(500).json({ error: "Amadeus search failed" });
+    console.error("AMADEUS ERROR:", e);
+    res.status(500).json({ error: "Amadeus search failed", details: e?.message || e });
   }
 });
 

@@ -1,5 +1,5 @@
+import { useState } from "react";
 import "./index.css";
-
 const features = [
   {
     title: "Premium travel & lifestyle hub",
@@ -102,7 +102,6 @@ function Hero() {
           </div>
 
           <div className="sj-hero-meta">
-            <span>✅ Built by the same founder as CoOwner.Estate</span>
             <span>🧭 Travel, RWA & rewards — step by step</span>
           </div>
         </div>
@@ -144,14 +143,31 @@ function Hero() {
     </header>
   );
 }
-function TravelAccessSection() {
+// --- ПОШУК АВІАКВИТКІВ ---
+function TravelAccessSection(): React.JSX.Element {
+  const openTripFlights = (): void => {
+    window.open(
+      "https://www.trip.com/flights/?Allianceid=7455498&SID=283527301",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
+  const openTripHotels = (): void => {
+    window.open(
+      "https://www.trip.com/t/2uaIDWYHiS2",
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
   return (
     <section className="sj-section sj-section-alt">
       <div className="sj-section-header">
         <h2>Smarter flights, without friction</h2>
         <p>
-          Compare routes and prices — then book directly with the airline or a
-          trusted partner. No markups. No forced accounts.
+          Compare routes and prices with a trusted global booking partner.
+          Book directly — Safe Journey does not add a markup.
         </p>
       </div>
 
@@ -161,13 +177,116 @@ function TravelAccessSection() {
           <input placeholder="To" />
           <input type="date" />
           <input type="date" />
-          <button className="sj-btn primary">
+
+          <button
+            className="sj-btn primary"
+            onClick={openTripFlights}
+          >
             Find best flight options
+          </button>
+        </div>
+
+        <div className="sj-flight-actions">
+          <button
+            className="sj-btn ghost"
+            onClick={openTripHotels}
+          >
+            Search hotels & stays
           </button>
         </div>
 
         <p className="sj-flight-note">
           You will be redirected to a trusted booking partner.
+          Member benefits and additional travel products are coming soon.
+        </p>
+      </div>
+    </section>
+  );
+}
+function CryptoTransferSection(): React.JSX.Element {
+  const [amount, setAmount] = useState<number>(100);
+  const [network, setNetwork] = useState<string>("SOLANA");
+  
+  const fee = (amount * 0.005).toFixed(2); 
+  const wiseFee = (amount * 0.015 + 0.5).toFixed(2); 
+  const saving = (Number(wiseFee) - Number(fee)).toFixed(2);
+
+  const handleTransfer = (): void => {
+  const cryptoToken = network === "SOLANA" ? "SOL_USDC" : "XRP_XRP";
+  
+  // ТИМЧАСОВО: Використовуємо Demo-сервер, який не вимагає верифікованого ключа
+  const baseUrl = "https://ramp.network"; 
+  
+  const params = new URLSearchParams({
+    hostAppName: "Safe Journey Club",
+    fiatCurrency: "EUR",
+    fiatAmount: amount.toString(),
+    cryptoAsset: cryptoToken,
+    // hostApiKey: "ВАШ_ТЕСТОВИЙ_КЛЮЧ" // Сюди згодом вставите ключ, коли схвалять заявку
+  });
+
+  const providerUrl = `${baseUrl}/?${params.toString()}`;
+  window.open(providerUrl, "_blank", "width=500,height=700,noopener,noreferrer");
+};
+
+  return (
+    <section id="transfers" className="sj-section sj-section-alt">
+      <div className="sj-section-header">
+        <h2>Web3-Powered Global Transfers</h2>
+        <p>
+          Explore fast cross-border payment routes using modern digital-asset
+          infrastructure.
+        </p>
+      </div>
+
+      <div className="sj-flight-box crypto-box">
+        <div className="sj-crypto-form">
+          <div className="sj-input-group">
+            <label>You Send (EUR)</label>
+
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              min={10}
+            />
+          </div>
+
+          <div className="sj-input-group">
+            <label>Network Route</label>
+
+            <select
+              value={network}
+              onChange={(e) => setNetwork(e.target.value)}
+            >
+              <option value="SOLANA">Solana / USDC</option>
+              <option value="RIPPLE">XRP Ledger / XRP</option>
+            </select>
+          </div>
+
+          <button
+            className="sj-btn primary"
+            onClick={handleTransfer}
+          >
+            Explore Transfer
+          </button>
+        </div>
+
+        <div className="sj-crypto-metrics">
+          <div className="metric-item">
+            <span>Illustrative platform fee (0.5%):</span>
+            <strong>€{fee}</strong>
+          </div>
+
+          <div className="metric-item highlight-metric">
+            <span>Illustrative difference:</span>
+            <strong>€{saving}</strong>
+          </div>
+        </div>
+
+        <p className="sj-flight-note text-center">
+          Final rates, fees, availability and transaction processing are
+          provided by the selected third-party provider.
         </p>
       </div>
     </section>
@@ -286,8 +405,137 @@ function FutureSection() {
     </section>
   );
 }
+interface TermsModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-function Footer() {
+function TermsModal({ isOpen, onClose }: TermsModalProps): React.JSX.Element | null {
+  if (!isOpen) return null;
+
+  return (
+    <div className="sj-modal-overlay" onClick={onClose}>
+      <div className="sj-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="sj-modal-header">
+          <h3>Terms of Service</h3>
+          <button className="sj-modal-close" onClick={onClose}>&times;</button>
+        </div>
+        
+        <div className="sj-modal-body">
+          <p style={{ fontSize: "0.85rem", color: "#8892b0", marginBottom: "20px" }}>
+            <strong>Last Updated:</strong> September 18, 2026
+          </p>
+          
+          <p>
+            Welcome to Safe Journey Club. Please read these Terms of Service ("Terms", "Agreement") carefully 
+            before using the website <a href="https://safejourney.club" target="_blank" rel="noreferrer" style={{ color: "#64ffda" }}>https://safejourney.club</a> (the 
+            "Platform" or "Service") operated by <strong>Safe Journey Club Limited</strong>, a company incorporated 
+            in Ireland under registration number <strong>751178</strong> ("Company", "we", "us", or "our").
+          </p>
+          
+          <p>
+            By accessing or using our Platform, you ("User", "Member", "you") agree to be bound by these Terms. 
+            If you disagree with any part of the terms, you do not have permission to access the Service.
+          </p>
+          
+          <hr style={{ border: "0", borderTop: "1px solid #222733", margin: "20px 0" }} />
+
+          <h4>💡 1. Scope of Service & Non-Regulated Status</h4>
+          <p>
+            <strong>1.1.</strong> Safe Journey Club Limited is a premium travel, lifestyle, and loyalty infrastructure platform. 
+            The Platform acts exclusively as a technology layer designed to offer membership perks, tokenized rewards, 
+            travel coordination concepts, and software integration tools.
+          </p>
+          <p>
+            <strong>1.2.</strong> The Company is not a bank, not an Electronic Money Institution (EMI), and not a licensed 
+            custodian or investment broker.
+          </p>
+          <p>
+            <strong>1.3.</strong> We do not directly capture, hold, manage, or settle fiat money, digital assets, or 
+            cross-border payment flows on behalf of users.
+          </p>
+
+          <h4>➡️ 2. Integration of Third-Party Licensed Partners</h4>
+          <p>
+            <strong>2.1.</strong> All regulated financial services, multi-currency card issuance, currency conversions, 
+            and fiat payment handling are executed entirely by our licensed third-party embedded banking partners, including 
+            but not limited to <strong>Wallester AS</strong> (an official Visa Principal Member and licensed payment institution).
+          </p>
+          <p>
+            <strong>2.2.</strong> All fiat-to-crypto and crypto-to-fiat transactions, blockchain liquidity bridges, and asset 
+            swaps (including those routing via Solana and Ripple rails) are managed, authenticated, and settled directly 
+            by <strong>Ramp Network</strong> (or other integrated, licensed liquidity providers available through hosted widgets).
+          </p>
+          <p>
+            <strong>2.3.</strong> By utilizing any financial or crypto functions made available via our technical interface, 
+            you acknowledge that you are entering into a direct contractual relationship with those respective third-party 
+            providers and agree to abide by their independent Know-Your-Customer (KYC), Anti-Money Laundering (AML), 
+            and transaction processing policies.
+          </p>
+
+          <h4>🔎 3. Membership Tiers & Subscription Perks</h4>
+          <p>
+            <strong>3.1.</strong> Safe Journey Club offers various membership tiers (e.g., Explorer, Member, Black Circle). 
+            The availability, pricing, qualification parameters, and perks of these tiers are conceptual in nature and 
+            subject to continuous modification at the sole discretion of the Company.
+          </p>
+          <p>
+            <strong>3.2.</strong> Club subscriptions, entry fees, or technology fees paid directly to the Company represent 
+            payments made exclusively for software access, curated network privileges, and internal club reward point systems. 
+            They do not constitute financial deposits or equity investment stakes.
+          </p>
+
+          <h4>📊 4. Real-World Assets (RWA) & Future Concepts</h4>
+          <p>
+            <strong>4.1.</strong> References to Real-World Asset (RWA) tokens, co-ownership pilots, on-chain rewards, or 
+            fractional experiments represent technical roadmaps and technological simulations.
+          </p>
+          <p>
+            <strong>4.2.</strong> No information provided on this Platform constitutes financial, investment, legal, or tax 
+            advice. Safe Journey Club does not offer securities or regulated crowdfunding products.
+          </p>
+
+          <h4>⚠️ 5. Anti-Money Laundering (AML) & User Verification</h4>
+          <p>
+            <strong>5.1.</strong> To access advanced features or third-party widgets, users must comply with all verification 
+            checks initiated by our partner networks.
+          </p>
+          <p>
+            <strong>5.2.</strong> Any attempt to use the technical interface of Safe Journey Club for illicit activities, 
+            structuring financial transactions, bypassing sanctions, or executing unauthorized capital flight will result 
+            in an immediate, permanent ban from the Platform, and data will be shared with the relevant authorities as 
+            required by Irish and European Union law.
+          </p>
+
+          <h4>🗒 6. Limitation of Liability</h4>
+          <p>
+            <strong>6.1.</strong> In no event shall Safe Journey Club Limited, nor its directors (including non-resident 
+            directors), employees, or affiliates, be held liable for any indirect, incidental, special, consequential, 
+            or punitive damages arising out of third-party network downtimes, blockchain protocol failures (including 
+            Solana or Ripple congestion), or the suspension of accounts by licensed EMI or crypto partners.
+          </p>
+
+          <h4>📅 7. Governing Law</h4>
+          <p>
+            <strong>7.1.</strong> These Terms shall be governed, construed, and enforced in accordance with the laws of 
+            <strong> Ireland</strong>, without regard to its conflict of law provisions. Any legal actions arising from 
+            the use of this software interface shall be resolved within the competent courts of Ireland.
+          </p>
+        </div>
+        
+        <div className="sj-modal-footer">
+          <button className="sj-btn primary" onClick={onClose}>I Accept & Understand</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface FooterProps {
+  onOpenTerms: () => void;
+}
+
+function Footer({ onOpenTerms }: FooterProps): React.JSX.Element {
   return (
     <footer className="sj-footer">
       <div className="sj-footer-inner">
@@ -303,29 +551,24 @@ function Footer() {
 
         <div className="sj-footer-cols">
           <div>
-            <h4>Projects</h4>
-            <a
-              href="https://coowner.estate"
-              target="_blank"
-              rel="noreferrer"
-            >
-              CoOwner.Estate
-            </a>
-          </div>
-          <div>
             <h4>Social</h4>
-            <a
-              href="https://x.com/AZagumennyy"
-              target="_blank"
-              rel="noreferrer"
-            >
+            <a href="https://x.com" target="_blank" rel="noreferrer">
               X (Twitter)
             </a>
           </div>
           <div>
+            <h4>Legal</h4>
+            <button 
+              onClick={onOpenTerms} 
+              className="sj-footer-link-btn"
+              style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left' }}
+            >
+              Terms of Service
+            </button>
+          </div>
+          <div>
             <h4>Contact</h4>
-            <a 
-            href="mailto:info@safejourney.club">info@safejourney.club</a>
+            <a href="mailto:info@safejourney.club">info@safejourney.club</a>
           </div>
         </div>
       </div>
@@ -338,20 +581,25 @@ function Footer() {
   );
 }
 
-export default function App() {
+export default function App(): React.JSX.Element {
+  const [isTermsOpen, setIsTermsOpen] = useState<boolean>(false);
+
   return (
     <div className="sj-layout">
       <Navbar />
       <Hero />
       <main className="sj-main">
+        <CryptoTransferSection />
         <BenefitsSection />
         <TravelAccessSection />
         <TiersSection />
         <FutureSection />
       </main>
-      <Footer />
+      <Footer onOpenTerms={() => setIsTermsOpen(true)} />
+      
+      {/* Модальне вікно з правилами */}
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </div>
   );
 }
-
 

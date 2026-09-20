@@ -583,3 +583,206 @@ a {
     flex-wrap: wrap;
   }
 }
+
+.sj-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.sj-modal-content {
+  background: #11141a; /* Темний преміальний фон під стиль вашого сайту */
+  color: #ffffff;
+  width: 90%;
+  max-width: 650px;
+  max-height: 80vh;
+  border-radius: 16px;
+  border: 1px solid #222733;
+  display: flex;
+  flex-direction: flex-direction;
+  flex-direction: column;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  animation: sjModalFadeIn 0.2s ease-out;
+}
+
+.sj-modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #222733;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sj-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.sj-modal-close {
+  background: none;
+  border: none;
+  color: #8892b0;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.sj-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #a8b2d1;
+}
+
+.sj-modal-body h4 {
+  color: #ffffff;
+  margin-top: 20px;
+  margin-bottom: 8px;
+}
+
+.sj-modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #222733;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@keyframes sjModalFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+/* ==========================================
+   ФІНТЕХ КАЛЬКУЛЯТОР (CRYPTO TRANSFER STYLES)
+   ========================================== */
+
+.crypto-box {
+  background: #161a23 !important;
+  border: 1px solid #222733 !important;
+  border-radius: 24px !important;
+  padding: 32px !important;
+  max-width: 580px !important;
+  margin: 40px auto !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.sj-crypto-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+
+@media (max-width: 600px) {
+  .sj-crypto-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .sj-crypto-form .sj-btn {
+    grid-column: span 1 !important;
+  }
+}
+
+.sj-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sj-input-group label {
+  font-size: 0.85rem;
+  color: #8892b0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sj-input-group input,
+.sj-input-group select {
+  background: #0d1117;
+  border: 1px solid #222733;
+  color: #ffffff;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.sj-input-group input:focus,
+.sj-input-group select:focus {
+  outline: none;
+  border-color: #64ffda;
+  box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.15);
+}
+
+/* Кнопка дії всередині форми займає всю ширину під двома полями */
+.sj-crypto-form .sj-btn {
+  grid-column: span 2;
+  width: 100%;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* МЕТРИКИ ТА ЕКОНОМІЯ */
+.sj-crypto-metrics {
+  background: #0d1117;
+  border-radius: 16px;
+  padding: 16px 20px;
+  border: 1px solid #1f2430;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: #8892b0;
+}
+
+.metric-item strong {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+/* Підсвічування економії зеленим фінтех-кольором */
+.highlight-metric {
+  border-top: 1px solid #222733;
+  padding-top: 12px;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.highlight-metric strong {
+  color: #64ffda !important;
+  font-size: 1.15rem;
+  text-shadow: 0 0 10px rgba(100, 255, 218, 0.2);
+}
+
+/* Додатковий текст по центру */
+.text-center {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: #606a85;
+}
