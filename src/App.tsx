@@ -48,7 +48,11 @@ const tiers = [
   },
 ];
 
-function Navbar() {
+interface NavbarProps {
+  onJoinClick: (tier: string) => void;
+}
+
+function Navbar({ onJoinClick }: NavbarProps): React.JSX.Element {
   return (
     <nav className="sj-nav">
       <div className="sj-nav-inner">
@@ -59,6 +63,7 @@ function Navbar() {
 
         <div className="sj-nav-links">
           <a href="#overview">Overview</a>
+          <a href="#transfers">Fast Transfers</a>
           <a href="#benefits">Benefits</a>
           <a href="#tiers">Membership</a>
           <a href="#future">Future</a>
@@ -66,7 +71,9 @@ function Navbar() {
 
         <div className="sj-nav-actions">
           <button className="sj-btn ghost">Sign in</button>
-          <button className="sj-btn primary">Join waitlist</button>
+          <button className="sj-btn primary" onClick={() => onJoinClick("Explorer")}>
+            Join the Club
+          </button>
         </div>
       </div>
     </nav>
@@ -317,15 +324,18 @@ function BenefitsSection() {
   );
 }
 
-function TiersSection() {
+interface TiersSectionProps {
+  onTierSelect: (tierName: string) => void;
+}
+
+function TiersSection({ onTierSelect }: TiersSectionProps): React.JSX.Element {
   return (
     <section id="tiers" className="sj-section">
       <div className="sj-section-header">
-        <h2>Membership tiers (concept)</h2>
+        <h2>Membership Tiers & Instant Access</h2>
         <p>
-          The first phase is not about selling cards. It is about building a
-          club, understanding real needs, and launching tiers only when they
-          truly make sense.
+          We don't believe in waiting lists. Choose your path, create an account, 
+          and start your smarter journey with Safe Journey Club today.
         </p>
       </div>
 
@@ -333,9 +343,7 @@ function TiersSection() {
         {tiers.map((tier) => (
           <div
             key={tier.name}
-            className={`sj-tier ${
-              tier.badge ? "sj-tier-highlight" : ""
-            }`}
+            className={`sj-tier ${tier.badge ? "sj-tier-highlight" : ""}`}
           >
             <div className="sj-tier-head">
               <h3>{tier.name}</h3>
@@ -347,8 +355,12 @@ function TiersSection() {
                 <li key={perk}>{perk}</li>
               ))}
             </ul>
-            <button className="sj-btn ghost full">
-              {tier.price === "Free" ? "Join as Explorer" : "Join waitlist"}
+            <button 
+              className={`sj-btn full ${tier.name === "Black Circle" ? "ghost" : "primary"}`}
+              disabled={tier.name === "Black Circle"} // Залишаємо Black Circle ексклюзивним
+              onClick={() => onTierSelect(tier.name)}
+            >
+              {tier.name === "Black Circle" ? "Closed Circle" : `Join as ${tier.name}`}
             </button>
           </div>
         ))}
@@ -583,22 +595,119 @@ function Footer({ onOpenTerms }: FooterProps): React.JSX.Element {
 
 export default function App(): React.JSX.Element {
   const [isTermsOpen, setIsTermsOpen] = useState<boolean>(false);
+  const [isJoinOpen, setIsJoinOpen] = useState<boolean>(false);
+  const [selectedTier, setSelectedTier] = useState<string>("Explorer");
+
+  const handleOpenJoin = (tier: string) => {
+    setSelectedTier(tier);
+    setIsJoinOpen(true);
+  };
 
   return (
     <div className="sj-layout">
-      <Navbar />
+      {/* Передаємо пропс у шапку сайту */}
+      <Navbar onJoinClick={handleOpenJoin} />
+      
       <Hero />
+      
       <main className="sj-main">
         <CryptoTransferSection />
         <BenefitsSection />
         <TravelAccessSection />
-        <TiersSection />
+        
+        {/* Передаємо пропс у картки тарифів */}
+        <TiersSection onTierSelect={handleOpenJoin} /> 
+        
         <FutureSection />
       </main>
+      
       <Footer onOpenTerms={() => setIsTermsOpen(true)} />
       
-      {/* Модальне вікно з правилами */}
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
+      <JoinModal isOpen={isJoinOpen} onClose={() => setIsJoinOpen(false)} selectedTier={selectedTier} />
+    </div>
+  );
+}
+
+interface JoinModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedTier: string;
+}
+
+function JoinModal({ isOpen, onClose, selectedTier }: JoinModalProps): React.JSX.Element | null {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Тут у майбутньому буде запит до вашого Node.js бэкенду
+    setSubmitted(true);
+  };
+
+  return (
+    <div className="sj-modal-overlay" onClick={onClose}>
+      <div className="sj-modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="sj-modal-header">
+          <h3>Activate Your {selectedTier} Membership</h3>
+          <button className="sj-modal-close" onClick={onClose}>&times;</button>
+        </div>
+        
+        <div className="sj-modal-body">
+          {!submitted ? (
+            <form onSubmit={handleSubmit} className="sj-join-form" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <p style={{ color: "#8892b0", fontSize: "0.95rem" }}>
+                You are creating an account under the <strong>{selectedTier}</strong> tier for <strong>Safe Journey Club</strong>.
+              </p>
+              
+              <div className="sj-input-group">
+                <label>Full Name</label>
+                <input 
+                  type="text" 
+                  placeholder="John Doe" 
+                  required 
+                  value={name} 
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+
+              <div className="sj-input-group">
+                <label>Email Address</label>
+                <input 
+                  type="email" 
+                  placeholder="john@example.com" 
+                  required 
+                  value={email} 
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              {selectedTier === "Member" && (
+                <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1" }}>
+                  💳 <strong>Membership Fee: €19/year</strong>. After clicking the button below, you will receive an invoice via Wise to activate your digital premium card.
+                </div>
+              )}
+
+              <button type="submit" className="sj-btn primary" style={{ padding: "14px", width: "100%", marginTop: "10px" }}>
+                {selectedTier === "Member" ? "Proceed to Payment" : "Create Free Account"}
+              </button>
+            </form>
+          ) : (
+            <div style={{ textAlign: "center", padding: "20px 0" }}>
+              <h4 style={{ color: "#64ffda", fontSize: "1.3rem", marginBottom: "12px" }}>Welcome to the Club, {name}!</h4>
+              <p style={{ color: "#a8b2d1", fontSize: "1rem", lineHeight: "1.6" }}>
+                {selectedTier === "Member" ? 
+                  "We have generated your invoice. Check your email inbox shortly for the secure Wise activation link. Once paid, your Safe Journey Card will be activated!" : 
+                  "Your Free Explorer account is ready. We've sent a temporary login token and access instructions to your email."}
+              </p>
+              <button className="sj-btn ghost" onClick={onClose} style={{ marginTop: "20px" }}>Close Window</button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
