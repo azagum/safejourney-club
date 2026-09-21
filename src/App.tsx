@@ -50,9 +50,10 @@ const tiers = [
 
 interface NavbarProps {
   onJoinClick: (tier: string) => void;
+  onSignInClick: () => void; // Додано новий пропс для Sign in
 }
 
-function Navbar({ onJoinClick }: NavbarProps): React.JSX.Element {
+function Navbar({ onJoinClick, onSignInClick }: NavbarProps): React.JSX.Element {
   return (
     <nav className="sj-nav">
       <div className="sj-nav-inner">
@@ -70,7 +71,10 @@ function Navbar({ onJoinClick }: NavbarProps): React.JSX.Element {
         </div>
 
         <div className="sj-nav-actions">
-          <button className="sj-btn ghost">Sign in</button>
+          {/* Кнопка тепер активна та викликає сповіщення */}
+          <button className="sj-btn ghost" onClick={onSignInClick}>
+            Sign in
+          </button>
           <button className="sj-btn primary" onClick={() => onJoinClick("Explorer")}>
             Join the Club
           </button>
@@ -617,17 +621,19 @@ function Footer({ onOpenTerms }: FooterProps): React.JSX.Element {
 export default function App(): React.JSX.Element {
   const [isTermsOpen, setIsTermsOpen] = useState<boolean>(false);
   const [isJoinOpen, setIsJoinOpen] = useState<boolean>(false);
+  const [isSignInOpen, setIsSignInOpen] = useState<boolean>(false); // Новий стан для Sign In
   const [selectedTier, setSelectedTier] = useState<string>("Explorer");
 
   const handleOpenJoin = (tier: string) => {
     setSelectedTier(tier);
+    setIsSignInOpen(false); // Закриваємо вікно входу, якщо перемикаємось на реєстрацію
     setIsJoinOpen(true);
   };
 
   return (
     <div className="sj-layout">
-      {/* Передаємо пропс у шапку сайту */}
-      <Navbar onJoinClick={handleOpenJoin} />
+      {/* Передаємо обидва пропси управління вікнами */}
+      <Navbar onJoinClick={handleOpenJoin} onSignInClick={() => setIsSignInOpen(true)} />
       
       <Hero onJoinClick={handleOpenJoin} />
       
@@ -635,10 +641,7 @@ export default function App(): React.JSX.Element {
         <CryptoTransferSection />
         <BenefitsSection />
         <TravelAccessSection />
-        
-        {/* Передаємо пропс у картки тарифів */}
         <TiersSection onTierSelect={handleOpenJoin} /> 
-        
         <FutureSection />
       </main>
       
@@ -646,6 +649,13 @@ export default function App(): React.JSX.Element {
       
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
       <JoinModal isOpen={isJoinOpen} onClose={() => setIsJoinOpen(false)} selectedTier={selectedTier} />
+      
+      {/* Додаємо нове вікно входу в леяут */}
+      <SignInModal 
+        isOpen={isSignInOpen} 
+        onClose={() => setIsSignInOpen(false)} 
+        onSwitchToJoin={() => handleOpenJoin("Explorer")} 
+      />
     </div>
   );
 }
@@ -727,6 +737,46 @@ function JoinModal({ isOpen, onClose, selectedTier }: JoinModalProps): React.JSX
               <button className="sj-btn ghost" onClick={onClose} style={{ marginTop: "20px" }}>Close Window</button>
             </div>
           )}
+        </div>
+      </div>
+    </div>
+  );
+}
+interface SignInModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSwitchToJoin: () => void;
+}
+
+function SignInModal({ isOpen, onClose, onSwitchToJoin }: SignInModalProps): React.JSX.Element | null {
+  if (!isOpen) return null;
+
+  return (
+    <div className="sj-modal-overlay" onClick={onClose}>
+      <div className="sj-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "450px" }}>
+        <div className="sj-modal-header">
+          <h3>Member Sign In</h3>
+          <button className="sj-modal-close" onClick={onClose}>&times;</button>
+        </div>
+        
+        <div className="sj-modal-body" style={{ textAlign: "center", padding: "30px 20px" }}>
+          <div style={{ fontSize: "2.5rem", marginBottom: "16px" }}>🔒</div>
+          <h4 style={{ color: "#ffffff", fontSize: "1.2rem", marginBottom: "8px" }}>Portal Under Optimization</h4>
+          <p style={{ color: "#a8b2d1", fontSize: "0.95rem", lineHeight: "1.6", marginBottom: "20px" }}>
+            The secure dashboard for digital ID, Web3-wallet login (Solana), and card controls is being finalized alongside our regulated partner rollout.
+          </p>
+          <p style={{ color: "#606a85", fontSize: "0.85rem", marginBottom: "24px" }}>
+            If you are a new member, please create an account first to reserve your club tier status.
+          </p>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <button className="sj-btn primary" onClick={onSwitchToJoin}>
+              Create / Activate Account
+            </button>
+            <button className="sj-btn ghost" onClick={onClose}>
+              Back to Overview
+            </button>
+          </div>
         </div>
       </div>
     </div>
