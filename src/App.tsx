@@ -15,7 +15,7 @@ const features = [
   },
 ];
 
-const tiers = [
+const tiers: Tier[] = [
   {
     name: "Explorer",
     price: "Free",
@@ -28,7 +28,7 @@ const tiers = [
   },
   {
     name: "Member",
-    price: "Coming soon",
+    price: "€19 / year", // Прибрали Coming soon, поставили ціну
     badge: "Most popular",
     perks: [
       "Preferred pricing on selected hotels & stays",
@@ -38,8 +38,8 @@ const tiers = [
   },
   {
     name: "Black Circle",
-    price: "Waitlist",
-    badge: "",
+    price: "Bespoke / Custom", // Прибрали Waitlist, додали преміальний статус
+    badge: "Elite Tier",
     perks: [
       "Closed-circle curated travel & lifestyle",
       "Access to RWA & co-ownership pilots",
@@ -374,12 +374,12 @@ function TiersSection({ onTierSelect }: TiersSectionProps): React.JSX.Element {
                 <li key={perk}>{perk}</li>
               ))}
             </ul>
+            {/* Усі кнопки тепер активні, фіолетові та зрозумілі */}
             <button 
-              className={`sj-btn full ${tier.name === "Black Circle" ? "ghost" : "primary"}`}
-              disabled={tier.name === "Black Circle"} // Залишаємо Black Circle ексклюзивним
+              className="sj-btn primary full"
               onClick={() => onTierSelect(tier.name)}
             >
-              {tier.name === "Black Circle" ? "Closed Circle" : `Join as ${tier.name}`}
+              {tier.name === "Black Circle" ? "Request Black Card" : `Join as ${tier.name}`}
             </button>
           </div>
         ))}
@@ -711,25 +711,34 @@ function JoinModal({ isOpen, onClose, selectedTier }: JoinModalProps): React.JSX
               </div>
 
               {selectedTier === "Member" && (
-                <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1" }}>
-                  💳 <strong>Membership Fee: €19/year</strong>. After clicking the button below, you will receive an invoice via Wise to activate your digital premium card.
-                </div>
-              )}
+              <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1" }}>
+              💳 <strong>Membership Fee: €19/year</strong>. After clicking the button below, you will receive an invoice via Wise to activate your digital premium card.
+          </div>
+          )}
+
+              {selectedTier === "Black Circle" && (
+              <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1" }}>
+              👑 <strong>Elite Membership Card Request</strong>. Your application will be sent directly to the club's board. We will contact you via email to schedule a private video call for verification and bespoke card minting.
+          </div>
+          )}
+
 
               <button type="submit" className="sj-btn primary" style={{ padding: "14px", width: "100%", marginTop: "10px" }}>
                 {selectedTier === "Member" ? "Proceed to Payment" : "Create Free Account"}
               </button>
             </form>
           ) : (
-            <div style={{ textAlign: "center", padding: "20px 0" }}>
-              <h4 style={{ color: "#64ffda", fontSize: "1.3rem", marginBottom: "12px" }}>Welcome to the Club, {name}!</h4>
-              <p style={{ color: "#a8b2d1", fontSize: "1rem", lineHeight: "1.6" }}>
-                {selectedTier === "Member" ? 
-                  "We have generated your invoice. Check your email inbox shortly for the secure Wise activation link. Once paid, your Safe Journey Card will be activated!" : 
-                  "Your Free Explorer account is ready. We've sent a temporary login token and access instructions to your email."}
-              </p>
-              <button className="sj-btn ghost" onClick={onClose} style={{ marginTop: "20px" }}>Close Window</button>
-            </div>
+            // Оновіть текст у блоці відображення успішного сабміту:
+<div style={{ textAlign: "center", padding: "20px 0" }}>
+  <h4 style={{ color: "#64ffda", fontSize: "1.3rem", marginBottom: "12px" }}>Welcome to the Club, {name}!</h4>
+  <p style={{ color: "#a8b2d1", fontSize: "1rem", lineHeight: "1.6" }}>
+    {selectedTier === "Member" && "We have generated your invoice. Check your email inbox shortly for the secure Wise activation link. Once paid, your Safe Journey Card will be activated!"}
+    {selectedTier === "Explorer" && "Your Free Explorer account is ready. We've sent a temporary login token and access instructions to your email."}
+    {selectedTier === "Black Circle" && "Your Black Circle application has been securely received. Our concierge team will review your profile and contact you within 24 hours to initiate your premium onboarding."}
+  </p>
+  <button className="sj-btn ghost" onClick={onClose} style={{ marginTop: "20px" }}>Close Window</button>
+</div>
+
           )}
         </div>
       </div>
