@@ -877,3 +877,72 @@ a {
   color: #64ffda;
   transform: translateX(4px);
 }
+/* ==========================================
+   ОНОВЛЕНИЙ БЛОК ПАРТНЕРСТВА WALLESTER
+   ========================================== */
+
+.sj-partner-card-block {
+  background: #11141a; /* Контрастний темний фон */
+  border: 1px solid #222733;
+  border-radius: 20px;
+  padding: 28px;
+  margin: 30px auto;
+  max-width: 650px;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.sj-partner-card-block:hover {
+  border-color: rgba(100, 255, 218, 0.2);
+  box-shadow: 0 12px 40px rgba(100, 255, 218, 0.03);
+}
+
+.sj-partner-badge {
+  display: inline-block;
+  background: rgba(100, 255, 218, 0.1);
+  color: #64ffda;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.sj-partner-card-block h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.3rem;
+  color: #ffffff;
+}
+
+.sj-partner-card-block p {
+  color: #8892b0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0 0 24px 0;
+}
+
+/* ФІРМОВА ФІНТЕХ КНОПКА КЛУБУ */
+.sj-partner-btn {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none !important;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 24px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: #64ffda !important; /* Перефарбували у фірмовий неоново-синій */
+  color: #0a192f !important; /* Темний текст для ідеального контрасту */
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 4px 15px rgba(100, 255, 218, 0.2);
+}
+
+.sj-partner-btn:hover {
+  background: #52deba !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(100, 255, 218, 0.3);
+}

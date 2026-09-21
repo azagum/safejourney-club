@@ -394,54 +394,69 @@ function TiersSection({ onTierSelect }: TiersSectionProps): React.JSX.Element {
   );
 }
 
-function FutureSection() {
+function FutureSection(): React.JSX.Element {
   return (
     <section id="future" className="sj-section sj-section-alt">
       <div className="sj-section-header">
-        <h2>The journey: from travel club to RWA layer</h2>
+        <h2>The Journey: From Travel Club to RWA Layer</h2>
         <p>
-          Safe Journey Club is built deliberately and slowly — with trust and
-          real-world value first, and tokenization only where it helps.
+          Safe Journey Club is built deliberately and slowly — establishing trust, real-world utility, and robust compliance partnerships first.
         </p>
       </div>
 
       <div className="sj-roadmap">
+        {/* PHASE 1 */}
         <div className="sj-roadmap-item">
           <span className="sj-step">Phase 1</span>
-          <h3>Travel & perks foundation</h3>
+          <h3>Travel & Perks Foundation</h3>
           <p>
-            Curated bookings, insurance, and travel benefits for members,
-            without forcing anyone into crypto at all.
+            Curated bookings, insurance coordination, and premium travel lifestyle benefits 
+            for members — completely localized and friction-free.
           </p>
         </div>
 
-        <div className="sj-partner-cta">
-  <p>
-    Start with a trusted EU card partner — zero FX fees, modern controls,
-    and clean onboarding.
-  </p>
-  <a
-    href="https://wallester.com/atrk?c=00fe5bd3-1975-4bfe-89bc-0c2631357a6b&promo=direct_link"
-    target="_blank"
-    rel="noreferrer"
-    className="sj-btn ghost"
-  >
-    Explore Wallester Card
-  </a>
-</div>
+        {/* INTEGRATED CARD PARTNER BLOCK */}
+        <div className="sj-partner-card-block">
+          <div className="sj-partner-badge">Official Card Infrastructure Partner</div>
+          <h3>Co-Branded Card Integration</h3>
+          <p>
+            We operate with trusted European payment networks. Enjoy zero FX fees, elite spending controls, 
+            and instant digital onboarding via our dedicated partner gateway.
+          </p>
+          <a
+            href="https://wallester.com/atrk?c=00fe5bd3-1975-4bfe-89bc-0c2631357a6b&promo=direct_link"
+            target="_blank"
+            rel="noreferrer"
+            className="sj-btn primary sj-partner-btn"
+          >
+            Issue Safe Journey Card via Wallester →
+          </a>
+        </div>
 
+        {/* PHASE 2 */}
+        <div className="sj-roadmap-item">
+          <span className="sj-step">Phase 2</span>
+          <h3>Global Web3 Remittances</h3>
+          <p>
+            Integration of Solana and Ripple liquidity bridges to provide high-speed, 
+            ultra-low-fee worldwide transfers disguised as a premium loyalty perk.
+          </p>
+        </div>
+
+        {/* PHASE 3 */}
         <div className="sj-roadmap-item">
           <span className="sj-step">Phase 3</span>
-          <h3>RWA & co-ownership pilots</h3>
+          <h3>RWA & Co-Ownership Pilots</h3>
           <p>
-            Carefully structured real-world asset experiments — for example,
-            co-owned stays, curated properties, and housing pilots.
+            Carefully structured real-world asset experiments — for example, 
+            co-owned stays, premium properties, and curated transport housing pilots.
           </p>
         </div>
       </div>
     </section>
   );
 }
+
 interface TermsModalProps {
   isOpen: boolean;
   onClose: () => void;
