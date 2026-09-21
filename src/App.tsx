@@ -463,120 +463,61 @@ interface TermsModalProps {
 }
 
 function TermsModal({ isOpen, onClose }: TermsModalProps): React.JSX.Element | null {
+  const [activeTab, setActiveTab] = useState<"TERMS" | "PRIVACY">("TERMS");
+
   if (!isOpen) return null;
 
   return (
     <div className="sj-modal-overlay" onClick={onClose}>
       <div className="sj-modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="sj-modal-header">
-          <h3>Terms of Service</h3>
-          <button className="sj-modal-close" onClick={onClose}>&times;</button>
+        {/* Перемикач вкладок вгорі модального вікна */}
+        <div className="sj-modal-tabs" style={{ display: "flex", borderBottom: "1px solid #222733" }}>
+          <button 
+            onClick={() => setActiveTab("TERMS")}
+            style={{ flex: 1, padding: "16px", background: "none", color: activeTab === "TERMS" ? "#64ffda" : "#8892b0", border: "none", borderBottom: activeTab === "TERMS" ? "2px solid #64ffda" : "none", fontWeight: "bold", cursor: "pointer" }}
+          >
+            Terms of Service
+          </button>
+          <button 
+            onClick={() => setActiveTab("PRIVACY")}
+            style={{ flex: 1, padding: "16px", background: "none", color: activeTab === "PRIVACY" ? "#64ffda" : "#8892b0", border: "none", borderBottom: activeTab === "PRIVACY" ? "2px solid #64ffda" : "none", fontWeight: "bold", cursor: "pointer" }}
+          >
+            Privacy Policy
+          </button>
         </div>
         
         <div className="sj-modal-body">
-          <p style={{ fontSize: "0.85rem", color: "#8892b0", marginBottom: "20px" }}>
-            <strong>Last Updated:</strong> September 18, 2026
-          </p>
-          
-          <p>
-            Welcome to Safe Journey Club. Please read these Terms of Service ("Terms", "Agreement") carefully 
-            before using the website <a href="https://safejourney.club" target="_blank" rel="noreferrer" style={{ color: "#64ffda" }}>https://safejourney.club</a> (the 
-            "Platform" or "Service") operated by <strong>Safe Journey Club Limited</strong>, a company incorporated 
-            in Ireland under registration number <strong>751178</strong> ("Company", "we", "us", or "our").
-          </p>
-          
-          <p>
-            By accessing or using our Platform, you ("User", "Member", "you") agree to be bound by these Terms. 
-            If you disagree with any part of the terms, you do not have permission to access the Service.
-          </p>
-          
-          <hr style={{ border: "0", borderTop: "1px solid #222733", margin: "20px 0" }} />
-
-          <h4>💡 1. Scope of Service & Non-Regulated Status</h4>
-          <p>
-            <strong>1.1.</strong> Safe Journey Club Limited is a premium travel, lifestyle, and loyalty infrastructure platform. 
-            The Platform acts exclusively as a technology layer designed to offer membership perks, tokenized rewards, 
-            travel coordination concepts, and software integration tools.
-          </p>
-          <p>
-            <strong>1.2.</strong> The Company is not a bank, not an Electronic Money Institution (EMI), and not a licensed 
-            custodian or investment broker.
-          </p>
-          <p>
-            <strong>1.3.</strong> We do not directly capture, hold, manage, or settle fiat money, digital assets, or 
-            cross-border payment flows on behalf of users.
-          </p>
-
-          <h4>➡️ 2. Integration of Third-Party Licensed Partners</h4>
-          <p>
-            <strong>2.1.</strong> All regulated financial services, multi-currency card issuance, currency conversions, 
-            and fiat payment handling are executed entirely by our licensed third-party embedded banking partners, including 
-            but not limited to <strong>Wallester AS</strong> (an official Visa Principal Member and licensed payment institution).
-          </p>
-          <p>
-            <strong>2.2.</strong> All fiat-to-crypto and crypto-to-fiat transactions, blockchain liquidity bridges, and asset 
-            swaps (including those routing via Solana and Ripple rails) are managed, authenticated, and settled directly 
-            by <strong>Ramp Network</strong> (or other integrated, licensed liquidity providers available through hosted widgets).
-          </p>
-          <p>
-            <strong>2.3.</strong> By utilizing any financial or crypto functions made available via our technical interface, 
-            you acknowledge that you are entering into a direct contractual relationship with those respective third-party 
-            providers and agree to abide by their independent Know-Your-Customer (KYC), Anti-Money Laundering (AML), 
-            and transaction processing policies.
-          </p>
-
-          <h4>🔎 3. Membership Tiers & Subscription Perks</h4>
-          <p>
-            <strong>3.1.</strong> Safe Journey Club offers various membership tiers (e.g., Explorer, Member, Black Circle). 
-            The availability, pricing, qualification parameters, and perks of these tiers are conceptual in nature and 
-            subject to continuous modification at the sole discretion of the Company.
-          </p>
-          <p>
-            <strong>3.2.</strong> Club subscriptions, entry fees, or technology fees paid directly to the Company represent 
-            payments made exclusively for software access, curated network privileges, and internal club reward point systems. 
-            They do not constitute financial deposits or equity investment stakes.
-          </p>
-
-          <h4>📊 4. Real-World Assets (RWA) & Future Concepts</h4>
-          <p>
-            <strong>4.1.</strong> References to Real-World Asset (RWA) tokens, co-ownership pilots, on-chain rewards, or 
-            fractional experiments represent technical roadmaps and technological simulations.
-          </p>
-          <p>
-            <strong>4.2.</strong> No information provided on this Platform constitutes financial, investment, legal, or tax 
-            advice. Safe Journey Club does not offer securities or regulated crowdfunding products.
-          </p>
-
-          <h4>⚠️ 5. Anti-Money Laundering (AML) & User Verification</h4>
-          <p>
-            <strong>5.1.</strong> To access advanced features or third-party widgets, users must comply with all verification 
-            checks initiated by our partner networks.
-          </p>
-          <p>
-            <strong>5.2.</strong> Any attempt to use the technical interface of Safe Journey Club for illicit activities, 
-            structuring financial transactions, bypassing sanctions, or executing unauthorized capital flight will result 
-            in an immediate, permanent ban from the Platform, and data will be shared with the relevant authorities as 
-            required by Irish and European Union law.
-          </p>
-
-          <h4>🗒 6. Limitation of Liability</h4>
-          <p>
-            <strong>6.1.</strong> In no event shall Safe Journey Club Limited, nor its directors (including non-resident 
-            directors), employees, or affiliates, be held liable for any indirect, incidental, special, consequential, 
-            or punitive damages arising out of third-party network downtimes, blockchain protocol failures (including 
-            Solana or Ripple congestion), or the suspension of accounts by licensed EMI or crypto partners.
-          </p>
-
-          <h4>📅 7. Governing Law</h4>
-          <p>
-            <strong>7.1.</strong> These Terms shall be governed, construed, and enforced in accordance with the laws of 
-            <strong> Ireland</strong>, without regard to its conflict of law provisions. Any legal actions arising from 
-            the use of this software interface shall be resolved within the competent courts of Ireland.
-          </p>
+          {activeTab === "TERMS" ? (
+            <>
+              <p style={{ fontSize: "0.85rem", color: "#8892b0", marginBottom: "20px" }}><strong>Last Updated:</strong> September 18, 2026</p>
+              <p>Welcome to Safe Journey Club. Please read these Terms of Service carefully before using the website operated by <strong>Safe Journey Club Limited</strong>, Ireland (Reg. No. <strong>751178</strong>).</p>
+              <h4>💡 1. Scope of Service & Non-Regulated Status</h4>
+              <p>1.1. Safe Journey Club Limited is a premium travel, lifestyle, and loyalty infrastructure platform. The Platform acts exclusively as a technology layer designed to offer membership perks and software integration tools. The Company is not a bank, not an Electronic Money Institution (EMI), and not a licensed custodian.</p>
+              <h4>➡️ 2. Integration of Third-Party Licensed Partners</h4>
+              <p>2.1. All regulated financial services, multi-currency card issuance, and fiat payment handling are executed entirely by our licensed third-party embedded banking partners, including but not limited to <strong>Wallester AS</strong>. All fiat-to-crypto and crypto-to-fiat transactions are managed and settled directly by <strong>Ramp Network</strong> [2.2].</p>
+              <h4>⚠️ 3. Anti-Money Laundering (AML) & User Verification</h4>
+              <p>3.1. To access advanced features or third-party widgets, users must comply with all verification checks initiated by our partner networks. Any attempt to use the technical interface for illicit activities will result in an immediate, permanent ban.</p>
+              <h4>📅 4. Governing Law</h4>
+              <p>4.1. These Terms shall be governed, construed, and enforced in accordance with the laws of <strong>Ireland</strong>. Any legal actions shall be resolved within the competent courts of Ireland.</p>
+            </>
+          ) : (
+            <>
+              <p style={{ fontSize: "0.85rem", color: "#8892b0", marginBottom: "20px" }}><strong>Effective Date:</strong> September 21, 2026</p>
+              <p><strong>Safe Journey Club Limited</strong>, Ireland (Reg. No. <strong>751178</strong>) is committed to protecting your privacy in compliance with the <strong>EU General Data Protection Regulation (GDPR)</strong>.</p>
+              <h4>1. Data Controller</h4>
+              <p>For any data protection inquiries, you may contact our compliance team at: <strong>info@safejourney.club</strong>.</p>
+              <h4>2. Information We Collect</h4>
+              <p>We collect your Full Name, Email Address, and selected membership tier to deliver software and club access. We do not sell or lease your profile records.</p>
+              <h4>3. Processing of Biometric Data (KYC)</h4>
+              <p>We do not collect or store your official ID documents, passports, or biometric metadata on our servers. All identity authentication protocols are safely managed directly by our dedicated data processor: <strong>Sumsub</strong>.</p>
+              <h4>4. Your GDPR Rights</h4>
+              <p>You hold complete statutory rights to access, rectify, restrict, or demand the permanent erasure of your personal data from our platform systems at any moment.</p>
+            </>
+          )}
         </div>
         
         <div className="sj-modal-footer">
-          <button className="sj-btn primary" onClick={onClose}>I Accept & Understand</button>
+          <button className="sj-btn primary" onClick={onClose}>I Understand</button>
         </div>
       </div>
     </div>
@@ -609,15 +550,15 @@ function Footer({ onOpenTerms }: FooterProps): React.JSX.Element {
             </a>
           </div>
           <div>
-            <h4>Legal</h4>
-            <button 
-              onClick={onOpenTerms} 
-              className="sj-footer-link-btn"
-              style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left' }}
-            >
-              Terms of Service
-            </button>
-          </div>
+  <h4>Legal</h4>
+  <button onClick={onOpenTerms} className="sj-footer-link-btn" style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block', marginBottom: '8px' }}>
+    Terms of Service
+  </button>
+  <button onClick={onOpenTerms} className="sj-footer-link-btn" style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block' }}>
+    Privacy Policy
+  </button>
+</div>
+
           <div>
             <h4>Contact</h4>
             <a href="mailto:info@safejourney.club">info@safejourney.club</a>
