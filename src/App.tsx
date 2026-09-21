@@ -80,7 +80,18 @@ function Navbar({ onJoinClick }: NavbarProps): React.JSX.Element {
   );
 }
 
-function Hero() {
+interface HeroProps {
+  onJoinClick: (tier: string) => void;
+}
+
+function Hero({ onJoinClick }: HeroProps): React.JSX.Element {
+  const handleLearnMore = () => {
+    const benefitsSection = document.getElementById("benefits");
+    if (benefitsSection) {
+      benefitsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <header className="sj-hero" id="overview">
       <div className="sj-hero-inner">
@@ -100,10 +111,19 @@ function Hero() {
           </p>
 
           <div className="sj-hero-actions">
-            <button className="sj-btn primary sj-btn-large">
-              Join the early waitlist
+            {/* Головна кнопка тепер активна та відкриває безкоштовну реєстрацію */}
+            <button 
+              className="sj-btn primary sj-btn-large" 
+              onClick={() => onJoinClick("Explorer")}
+            >
+              Get Instant Club Access — Free
             </button>
-            <button className="sj-btn ghost sj-btn-large">
+            
+            {/* Кнопка плавного скролу до опису клубу */}
+            <button 
+              className="sj-btn ghost sj-btn-large" 
+              onClick={handleLearnMore}
+            >
               Learn how it works
             </button>
           </div>
@@ -150,6 +170,7 @@ function Hero() {
     </header>
   );
 }
+
 // --- ПОШУК АВІАКВИТКІВ ---
 function TravelAccessSection(): React.JSX.Element {
   const openTripFlights = (): void => {
@@ -608,7 +629,7 @@ export default function App(): React.JSX.Element {
       {/* Передаємо пропс у шапку сайту */}
       <Navbar onJoinClick={handleOpenJoin} />
       
-      <Hero />
+      <Hero onJoinClick={handleOpenJoin} />
       
       <main className="sj-main">
         <CryptoTransferSection />
