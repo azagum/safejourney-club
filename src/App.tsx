@@ -177,64 +177,58 @@ function Hero({ onJoinClick }: HeroProps): React.JSX.Element {
 
 // --- ПОШУК АВІАКВИТКІВ ---
 function TravelAccessSection(): React.JSX.Element {
-  const openTripFlights = (): void => {
-    window.open(
-      "https://www.trip.com/flights/?Allianceid=7455498&SID=283527301",
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
-
-  const openTripHotels = (): void => {
-    window.open(
-      "https://www.trip.com/t/2uaIDWYHiS2",
-      "_blank",
-      "noopener,noreferrer"
-    );
-  };
+  // Ваше партнерське посилання на Trip.com (замініть базовий лінк на ваше реферальне, якщо є)
+  const tripFlightsUrl = "https://www.trip.com/flights/?Allianceid=7455498&SID=283527301"; 
+  const tripHotelsUrl = "https://www.trip.com/t/2uaIDWYHiS2";
 
   return (
     <section className="sj-section sj-section-alt">
       <div className="sj-section-header">
-        <h2>Smarter flights, without friction</h2>
+        <h2>Smarter Journeys, Zero Friction</h2>
         <p>
-          Compare routes and prices with a trusted global booking partner.
-          Book directly — Safe Journey does not add a markup.
+          Compare routes and book directly with our trusted global travel partner. 
+          <strong> Safe Journey Club</strong> never adds markups or hidden fees.
         </p>
       </div>
 
-      <div className="sj-flight-box">
-        <div className="sj-flight-form">
-          <input placeholder="From" />
-          <input placeholder="To" />
-          <input type="date" />
-          <input type="date" />
+      {/* Нова преміальна сітка з двома великими інтерактивними кнопками */}
+      <div className="sj-travel-hub-grid">
+        <a 
+          href={tripFlightsUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="sj-travel-card"
+        >
+          <div className="sj-travel-icon">✈️</div>
+          <div className="sj-travel-info">
+            <h3>Find Best Flights</h3>
+            <p>Search global routes, airlines, and real-time schedules on Trip.com</p>
+          </div>
+          <span className="sj-travel-arrow">→</span>
+        </a>
 
-          <button
-            className="sj-btn primary"
-            onClick={openTripFlights}
-          >
-            Find best flight options
-          </button>
-        </div>
-
-        <div className="sj-flight-actions">
-          <button
-            className="sj-btn ghost"
-            onClick={openTripHotels}
-          >
-            Search hotels & stays
-          </button>
-        </div>
-
-        <p className="sj-flight-note">
-          You will be redirected to a trusted booking partner.
-          Member benefits and additional travel products are coming soon.
-        </p>
+        <a 
+          href={tripHotelsUrl} 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="sj-travel-card"
+        >
+          <div className="sj-travel-icon">🏨</div>
+          <div className="sj-travel-info">
+            <h3>Search Hotels & Stays</h3>
+            <p>Access exclusive pricing on thousands of premium properties worldwide</p>
+          </div>
+          <span className="sj-travel-arrow">→</span>
+        </a>
       </div>
+
+      <p className="sj-flight-note text-center">
+        ℹ️ You will be redirected securely to our booking partner. Member cashback benefits and integrated blockchain rewards are coming soon.
+      </p>
     </section>
   );
 }
+
 function CryptoTransferSection(): React.JSX.Element {
   const [amount, setAmount] = useState<number>(100);
   const [network, setNetwork] = useState<string>("SOLANA");
