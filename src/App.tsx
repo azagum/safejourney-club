@@ -655,12 +655,24 @@ function JoinModal({ isOpen, onClose, selectedTier }: JoinModalProps): React.JSX
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [chosenVerification, setChosenVerification] = useState<"SUMSUB" | "WORLD_ID" | "NONE">("NONE");
 
   if (!isOpen) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Тут у майбутньому буде запит до вашого Node.js бэкенду
+    setSubmitted(true);
+  };
+
+  const handleVerificationClick = (provider: "SUMSUB" | "WORLD_ID") => {
+    setChosenVerification(provider);
+    
+    // Формуємо тимчасові лінки для тестування (замініть на продуктові після схвалення)
+    const url = provider === "SUMSUB" 
+      ? "https://sumsub.com"
+      : "https://worldcoin.org";
+
+    window.open(url, "_blank", "width=500,height=700,noopener,noreferrer");
     setSubmitted(true);
   };
 
@@ -681,61 +693,77 @@ function JoinModal({ isOpen, onClose, selectedTier }: JoinModalProps): React.JSX
               
               <div className="sj-input-group">
                 <label>Full Name</label>
-                <input 
-                  type="text" 
-                  placeholder="John Doe" 
-                  required 
-                  value={name} 
-                  onChange={(e) => setName(e.target.value)}
-                />
+                <input type="text" placeholder="John Doe" required value={name} onChange={(e) => setName(e.target.value)} />
               </div>
 
               <div className="sj-input-group">
                 <label>Email Address</label>
-                <input 
-                  type="email" 
-                  placeholder="john@example.com" 
-                  required 
-                  value={email} 
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+                <input type="email" placeholder="john@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
               </div>
 
               {selectedTier === "Member" && (
-              <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1" }}>
-              💳 <strong>Membership Fee: €19/year</strong>. After clicking the button below, you will receive an invoice via Wise to activate your digital premium card.
-          </div>
-          )}
+                <>
+                  <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1", marginBottom: "10px" }}>
+                    💳 <strong>Membership Fee: €19/year</strong>. After clicking the button below, you will receive an invoice via Wise to activate your digital premium card.
+                  </div>
+                  <button type="submit" className="sj-btn primary" style={{ padding: "14px", width: "100%" }}>
+                    Proceed to Payment
+                  </button>
+                </>
+              )}
+
+              {selectedTier === "Explorer" && (
+                <button type="submit" className="sj-btn primary" style={{ padding: "14px", width: "100%" }}>
+                  Create Free Account
+                </button>
+              )}
 
               {selectedTier === "Black Circle" && (
-              <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1" }}>
-              👑 <strong>Elite Membership Card Request</strong>. Your application will be sent directly to the club's board. We will contact you via email to schedule a private video call for verification and bespoke card minting.
-          </div>
-          )}
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div style={{ background: "#0d1117", padding: "12px", borderRadius: "8px", border: "1px solid #222733", fontSize: "0.85rem", color: "#a8b2d1" }}>
+                    👑 <strong>Instant Digital ID Verification</strong>. To secure your elite tier, please choose your preferred verification pathway below. No manual video calls required.
+                  </div>
+                  
+                  {/* Варіант 1: Традиційний європейський комплаєнс */}
+                  <button 
+                    type="button" 
+                    className="sj-btn primary" 
+                    style={{ padding: "14px", width: "100%" }}
+                    onClick={() => handleVerificationClick("SUMSUB")}
+                  >
+                    Verify via Sumsub (ID / Passport / Diia) →
+                  </button>
 
-
-              <button type="submit" className="sj-btn primary" style={{ padding: "14px", width: "100%", marginTop: "10px" }}>
-                {selectedTier === "Member" ? "Proceed to Payment" : "Create Free Account"}
-              </button>
+                  {/* Варіант 2: Сучасна анонімна Web3 верифікація */}
+                  <button 
+                    type="button" 
+                    className="sj-btn ghost" 
+                    style={{ padding: "14px", width: "100%", borderColor: "#64ffda", color: "#64ffda" }}
+                    onClick={() => handleVerificationClick("WORLD_ID")}
+                  >
+                    Verify via World ID (Anonymously) 🌐
+                  </button>
+                </div>
+              )}
             </form>
           ) : (
-            // Оновіть текст у блоці відображення успішного сабміту:
-<div style={{ textAlign: "center", padding: "20px 0" }}>
-  <h4 style={{ color: "#64ffda", fontSize: "1.3rem", marginBottom: "12px" }}>Welcome to the Club, {name}!</h4>
-  <p style={{ color: "#a8b2d1", fontSize: "1rem", lineHeight: "1.6" }}>
-    {selectedTier === "Member" && "We have generated your invoice. Check your email inbox shortly for the secure Wise activation link. Once paid, your Safe Journey Card will be activated!"}
-    {selectedTier === "Explorer" && "Your Free Explorer account is ready. We've sent a temporary login token and access instructions to your email."}
-    {selectedTier === "Black Circle" && "Your Black Circle application has been securely received. Our concierge team will review your profile and contact you within 24 hours to initiate your premium onboarding."}
-  </p>
-  <button className="sj-btn ghost" onClick={onClose} style={{ marginTop: "20px" }}>Close Window</button>
-</div>
-
+            <div style={{ textAlign: "center", padding: "20px 0" }}>
+              <h4 style={{ color: "#64ffda", fontSize: "1.3rem", marginBottom: "12px" }}>Welcome to the Club, {name}!</h4>
+              <p style={{ color: "#a8b2d1", fontSize: "1rem", lineHeight: "1.6" }}>
+                {selectedTier === "Member" && "We have generated your invoice. Check your email inbox shortly for the secure Wise activation link. Once paid, your Safe Journey Card will be activated!"}
+                {selectedTier === "Explorer" && "Your Free Explorer account is ready. We've sent a temporary login token and access instructions to your email."}
+                {selectedTier === "Black Circle" && chosenVerification === "SUMSUB" && "Your identity session has been initialized with Sumsub. Complete the automated document check window to activate your custom Black Card."}
+                {selectedTier === "Black Circle" && chosenVerification === "WORLD_ID" && "Your World ID verification request has been securely processed. Once approved on-chain, your custom Black Card will be minted."}
+              </p>
+              <button className="sj-btn ghost" onClick={onClose} style={{ marginTop: "20px" }}>Close Window</button>
+            </div>
           )}
         </div>
       </div>
     </div>
   );
 }
+
 interface SignInModalProps {
   isOpen: boolean;
   onClose: () => void;
