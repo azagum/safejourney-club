@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./index.css";
+
 const features = [
   {
     title: "Premium travel & lifestyle hub",
@@ -14,7 +15,12 @@ const features = [
     text: "Use it just for better booking deals — or go deeper: rewards, club tiers, curated trips, and, in future, co-ownership models.",
   },
 ];
-
+interface Tier {
+  name: string;
+  price: string;
+  badge: string;
+  perks: string[];
+}
 const tiers: Tier[] = [
   {
     name: "Explorer",
@@ -370,7 +376,7 @@ function TiersSection({ onTierSelect }: TiersSectionProps): React.JSX.Element {
             </div>
             <p className="sj-tier-price">{tier.price}</p>
             <ul className="sj-tier-list">
-              {tier.perks.map((perk) => (
+              {tier.perks.map((perk: string) => (
                 <li key={perk}>{perk}</li>
               ))}
             </ul>
