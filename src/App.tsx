@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import "./index.css";
 
 const features = [
@@ -460,17 +461,23 @@ function FutureSection(): React.JSX.Element {
 interface TermsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  defaultTab?: "TERMS" | "PRIVACY"; // Додали правило для вкладки за замовчуванням
 }
 
-function TermsModal({ isOpen, onClose }: TermsModalProps): React.JSX.Element | null {
-  const [activeTab, setActiveTab] = useState<"TERMS" | "PRIVACY">("TERMS");
+function TermsModal({ isOpen, onClose, defaultTab = "TERMS" }: TermsModalProps): React.JSX.Element | null {
+  const [activeTab, setActiveTab] = useState<"TERMS" | "PRIVACY">(defaultTab);
+
+  useEffect(() => {
+    if (isOpen) {
+      setActiveTab(defaultTab);
+    }
+  }, [isOpen, defaultTab]);
 
   if (!isOpen) return null;
 
   return (
     <div className="sj-modal-overlay" onClick={onClose}>
       <div className="sj-modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* Перемикач вкладок вгорі модального вікна */}
         <div className="sj-modal-tabs" style={{ display: "flex", borderBottom: "1px solid #222733" }}>
           <button 
             onClick={() => setActiveTab("TERMS")}
@@ -494,7 +501,7 @@ function TermsModal({ isOpen, onClose }: TermsModalProps): React.JSX.Element | n
               <h4>💡 1. Scope of Service & Non-Regulated Status</h4>
               <p>1.1. Safe Journey Club Limited is a premium travel, lifestyle, and loyalty infrastructure platform. The Platform acts exclusively as a technology layer designed to offer membership perks and software integration tools. The Company is not a bank, not an Electronic Money Institution (EMI), and not a licensed custodian.</p>
               <h4>➡️ 2. Integration of Third-Party Licensed Partners</h4>
-              <p>2.1. All regulated financial services, multi-currency card issuance, and fiat payment handling are executed entirely by our licensed third-party embedded banking partners, including but not limited to <strong>Wallester AS</strong>. All fiat-to-crypto and crypto-to-fiat transactions are managed and settled directly by <strong>Ramp Network</strong> [2.2].</p>
+              <p>2.1. All regulated financial services, multi-currency card issuance, and fiat payment handling are executed entirely by our licensed third-party embedded banking partners, including but not limited to <strong>Wallester AS</strong>. All fiat-to-crypto and crypto-to-fiat transactions are managed and settled directly by <strong>Ramp Network</strong>.</p>
               <h4>⚠️ 3. Anti-Money Laundering (AML) & User Verification</h4>
               <p>3.1. To access advanced features or third-party widgets, users must comply with all verification checks initiated by our partner networks. Any attempt to use the technical interface for illicit activities will result in an immediate, permanent ban.</p>
               <h4>📅 4. Governing Law</h4>
@@ -515,7 +522,6 @@ function TermsModal({ isOpen, onClose }: TermsModalProps): React.JSX.Element | n
             </>
           )}
         </div>
-        
         <div className="sj-modal-footer">
           <button className="sj-btn primary" onClick={onClose}>I Understand</button>
         </div>
@@ -526,9 +532,10 @@ function TermsModal({ isOpen, onClose }: TermsModalProps): React.JSX.Element | n
 
 interface FooterProps {
   onOpenTerms: () => void;
+  onOpenPrivacy: () => void; // Додали правило для приватності
 }
 
-function Footer({ onOpenTerms }: FooterProps): React.JSX.Element {
+function Footer({ onOpenTerms, onOpenPrivacy }: FooterProps): React.JSX.Element {
   return (
     <footer className="sj-footer">
       <div className="sj-footer-inner">
@@ -537,35 +544,39 @@ function Footer({ onOpenTerms }: FooterProps): React.JSX.Element {
             <span className="sj-logo-mark" />
             <span className="sj-logo-text">Safe Journey Club</span>
           </div>
-          <p className="sj-footer-text">
-            A modern club for travel, rewards, and future RWA journeys.
-          </p>
+          <p className="sj-footer-text">A modern club for travel, rewards, and future RWA journeys.</p>
         </div>
-
         <div className="sj-footer-cols">
+          
           <div>
             <h4>Social</h4>
-            <a href="https://x.com" target="_blank" rel="noreferrer">
-              X (Twitter)
-            </a>
+            <a href="https://x.com" target="_blank" rel="noreferrer">X (Twitter)</a>
           </div>
           <div>
-  <h4>Legal</h4>
-  <button onClick={onOpenTerms} className="sj-footer-link-btn" style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block', marginBottom: '8px' }}>
-    Terms of Service
-  </button>
-  <button onClick={onOpenTerms} className="sj-footer-link-btn" style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block' }}>
-    Privacy Policy
-  </button>
-</div>
-
+            <h4>Legal</h4>
+            <a 
+              href="#terms" 
+              onClick={(e) => { e.preventDefault(); window.location.hash = "terms"; onOpenTerms(); }}
+              className="sj-footer-link-btn"
+              style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block', marginBottom: '8px', textDecoration: 'none' }}
+            >
+              Terms of Service
+            </a>
+            <a 
+              href="#privacy" 
+              onClick={(e) => { e.preventDefault(); window.location.hash = "privacy"; onOpenPrivacy(); }}
+              className="sj-footer-link-btn"
+              style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block', textDecoration: 'none' }}
+            >
+              Privacy Policy
+            </a>
+          </div>
           <div>
             <h4>Contact</h4>
             <a href="mailto:info@safejourney.club">info@safejourney.club</a>
           </div>
         </div>
       </div>
-
       <div className="sj-footer-bottom">
         <span>© {new Date().getFullYear()} Safe Journey Club</span>
         <span>Not financial advice. Not an investment product.</span>
@@ -577,20 +588,41 @@ function Footer({ onOpenTerms }: FooterProps): React.JSX.Element {
 export default function App(): React.JSX.Element {
   const [isTermsOpen, setIsTermsOpen] = useState<boolean>(false);
   const [isJoinOpen, setIsJoinOpen] = useState<boolean>(false);
-  const [isSignInOpen, setIsSignInOpen] = useState<boolean>(false); // Новий стан для Sign In
+  const [isSignInOpen, setIsSignInOpen] = useState<boolean>(false);
   const [selectedTier, setSelectedTier] = useState<string>("Explorer");
+  const [initialModalTab, setInitialModalTab] = useState<"TERMS" | "PRIVACY">("TERMS");
+
+  useEffect(() => {
+    const checkUrlHash = () => {
+      const hash = window.location.hash;
+      if (hash === "#privacy") {
+        setInitialModalTab("PRIVACY");
+        setIsTermsOpen(true);
+      } else if (hash === "#terms") {
+        setInitialModalTab("TERMS");
+        setIsTermsOpen(true);
+      }
+    };
+
+    checkUrlHash();
+    window.addEventListener("hashchange", checkUrlHash);
+    return () => window.removeEventListener("hashchange", checkUrlHash);
+  }, []);
 
   const handleOpenJoin = (tier: string) => {
     setSelectedTier(tier);
-    setIsSignInOpen(false); // Закриваємо вікно входу, якщо перемикаємось на реєстрацію
+    setIsSignInOpen(false);
     setIsJoinOpen(true);
+  };
+
+  const handleOpenTermsDirectly = (tab: "TERMS" | "PRIVACY") => {
+    setInitialModalTab(tab);
+    setIsTermsOpen(true);
   };
 
   return (
     <div className="sj-layout">
-      {/* Передаємо обидва пропси управління вікнами */}
       <Navbar onJoinClick={handleOpenJoin} onSignInClick={() => setIsSignInOpen(true)} />
-      
       <Hero onJoinClick={handleOpenJoin} />
       
       <main className="sj-main">
@@ -601,17 +633,14 @@ export default function App(): React.JSX.Element {
         <FutureSection />
       </main>
       
-      <Footer onOpenTerms={() => setIsTermsOpen(true)} />
-      
-      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
-      <JoinModal isOpen={isJoinOpen} onClose={() => setIsJoinOpen(false)} selectedTier={selectedTier} />
-      
-      {/* Додаємо нове вікно входу в леяут */}
-      <SignInModal 
-        isOpen={isSignInOpen} 
-        onClose={() => setIsSignInOpen(false)} 
-        onSwitchToJoin={() => handleOpenJoin("Explorer")} 
+      <Footer 
+        onOpenTerms={() => handleOpenTermsDirectly("TERMS")} 
+        onOpenPrivacy={() => handleOpenTermsDirectly("PRIVACY")} 
       />
+      
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} defaultTab={initialModalTab} />
+      <JoinModal isOpen={isJoinOpen} onClose={() => setIsJoinOpen(false)} selectedTier={selectedTier} />
+      <SignInModal isOpen={isSignInOpen} onClose={() => setIsSignInOpen(false)} onSwitchToJoin={() => handleOpenJoin("Explorer")} />
     </div>
   );
 }
