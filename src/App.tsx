@@ -416,22 +416,41 @@ function FutureSection(): React.JSX.Element {
           </p>
         </div>
 
-        {/* INTEGRATED CARD PARTNER BLOCK */}
-        <div className="sj-partner-card-block">
-          <div className="sj-partner-badge">Official Card Infrastructure Partner</div>
-          <h3>Co-Branded Card Integration</h3>
-          <p>
-            We operate with trusted European payment networks. Enjoy zero FX fees, elite spending controls, 
-            and instant digital onboarding via our dedicated partner gateway.
-          </p>
-          <a
-            href="https://wallester.com/atrk?c=00fe5bd3-1975-4bfe-89bc-0c2631357a6b&promo=direct_link"
-            target="_blank"
-            rel="noreferrer"
-            className="sj-btn primary sj-partner-btn"
-          >
-            Issue Safe Journey Card via Wallester →
-          </a>
+        {/* ПАРТНЕРСЬКИЙ ХАБ (БЕЗ ВБУДОВАНИХ СТИЛІВ, ВСЕ СТИЛІЗОВАНО ЧЕРЕЗ КЛАСИ) */}
+        <div className="sj-partners-container">
+          <div className="sj-partners-main-badge">
+            Official Infrastructure Partners
+          </div>
+          
+          <div className="sj-partners-split-grid">
+            {/* WALLESTER */}
+            <div className="sj-partner-mini-block">
+              <h3>Wallester Infrastructure</h3>
+              <p>Advanced corporate Visa card issuance, instant digital onboarding, and elite spending controls.</p>
+              <a
+                href="https://wallester.com"
+                target="_blank"
+                rel="noreferrer"
+                className="sj-btn primary sj-partner-btn-neon"
+              >
+                Issue Cards via Wallester →
+              </a>
+            </div>
+
+            {/* WISE */}
+            <div className="sj-partner-mini-block">
+              <h3>Wise Business Banking</h3>
+              <p>Multi-currency business accounts, real exchange rates, and international payment routing.</p>
+              <a
+                href="https://wise.com"
+                target="_blank"
+                rel="noreferrer"
+                className="sj-btn primary sj-partner-btn-neon"
+              >
+                Open Account via Wise →
+              </a>
+            </div>
+          </div>
         </div>
 
         {/* PHASE 2 */}
