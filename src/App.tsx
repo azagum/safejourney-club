@@ -181,7 +181,215 @@ function Hero({ onJoinClick }: HeroProps): React.JSX.Element {
     </header>
   );
 }
+function SearchAndAISection() {
+  const [from, setFrom] = useState("");
+  const [to, setTo] = useState("");
+  const [date, setDate] = useState("");
+  const [aiQuery, setAiQuery] = useState("");
+  const [aiOpen, setAiOpen] = useState(false);
 
+  // Classic Search — поки deep link (швидко і безпечно)
+  const handleClassicSearch = (provider: "kayak" | "trip") => {
+    if (!from || !to || !date) {
+      alert("Please fill From, To and Date");
+      return;
+    }
+
+    if (provider === "kayak") {
+      // Заміни YOUR_AFFILIATE_ID якщо є
+      const url = `https://www.kayak.com/flights/${from.toUpperCase()}-${to.toUpperCase()}/${date}?sort=bestflight_a`;
+      window.open(url, "_blank");
+    } else {
+      const url = `https://www.trip.com/flights/${from.toLowerCase()}-${to.toLowerCase()}/${date}.html`;
+      window.open(url, "_blank");
+    }
+  };
+
+  const handleAISubmit = () => {
+  if (!aiQuery.trim()) return;
+
+  const text = aiQuery.toLowerCase();
+
+  // Просте витягування міст (можна розширювати)
+  const cityMap: Record<string, string> = {
+    lisbon: "LIS",
+    лісабон: "LIS",
+    barcelona: "BCN",
+    барселона: "BCN",
+    istanbul: "IST",
+    стамбул: "IST",
+    bangkok: "BKK",
+    бангкок: "BKK",
+    rome: "FCO",
+    рим: "FCO",
+    prague: "PRG",
+    прага: "PRG",
+    dubai: "DXB",
+    дубай: "DXB",
+    paris: "CDG",
+    парижа: "CDG",
+    kyiv: "KBP",
+    київ: "KBP",
+    kiev: "KBP",
+  };
+
+  let toCode = "LIS"; // fallback
+  for (const [name, code] of Object.entries(cityMap)) {
+    if (text.includes(name)) {
+      toCode = code;
+      break;
+    }
+  }
+
+  // Звідки (поки за замовчуванням Київ)
+  let fromCode = "KBP";
+  if (text.includes("from warsaw") || text.includes("з варшави")) fromCode = "WAW";
+  if (text.includes("from berlin") || text.includes("з берліна")) fromCode = "BER";
+
+  // Дата (дуже спрощено — беремо +30 днів, якщо не знайшли)
+  const date = new Date();
+  date.setDate(date.getDate() + 30);
+  const dateStr = date.toISOString().slice(0, 10);
+
+  // Відкриваємо Kayak
+  const kayakUrl = `https://www.kayak.com/flights/${fromCode}-${toCode}/${dateStr}?sort=bestflight_a`;
+  window.open(kayakUrl, "_blank");
+
+  // Можна також відкрити Trip.com
+  // const tripUrl = `https://www.trip.com/flights/${fromCode.toLowerCase()}-${toCode.toLowerCase()}/${dateStr}.html`;
+  // window.open(tripUrl, "_blank");
+
+  console.log("AI parsed:", { fromCode, toCode, dateStr, original: aiQuery });
+  setAiQuery("");
+};
+
+  return (
+    <section className="sj-section" style={{ padding: "60px 20px" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+        <h2 style={{ textAlign: "center", marginBottom: "12px" }}>
+          Find your next safe journey
+        </h2>
+        <p style={{ textAlign: "center", color: "#64748b", marginBottom: "40px" }}>
+          Classic search or describe your trip in plain language
+        </p>
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "24px",
+          }}
+        >
+          {/* ===== CARD 1: Classic Search ===== */}
+          <div
+            style={{
+              background: "#0f172a",
+              borderRadius: "20px",
+              padding: "32px 28px",
+              border: "1px solid #1e293b",
+            }}
+          >
+            <h3 style={{ color: "#fff", marginBottom: "8px", fontSize: "1.35rem" }}>
+              Classic Search
+            </h3>
+            <p style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "24px" }}>
+              Search flights via Kayak & Trip.com
+            </p>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              <input
+                type="text"
+                placeholder="From (e.g. KBP)"
+                value={from}
+                onChange={(e) => setFrom(e.target.value)}
+                style={inputStyle}
+              />
+              <input
+                type="text"
+                placeholder="To (e.g. LIS)"
+                value={to}
+                onChange={(e) => setTo(e.target.value)}
+                style={inputStyle}
+              />
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                style={inputStyle}
+              />
+
+              <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+                <button
+                  className="sj-btn primary"
+                  style={{ flex: 1 }}
+                  onClick={() => handleClassicSearch("kayak")}
+                >
+                  Search on Kayak
+                </button>
+                <button
+                  className="sj-btn ghost"
+                  style={{ flex: 1 }}
+                  onClick={() => handleClassicSearch("trip")}
+                >
+                  Trip.com
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* ===== CARD 2: AI Travel Assistant ===== */}
+          <div
+            style={{
+              background: "#0f172a",
+              borderRadius: "20px",
+              padding: "32px 28px",
+              border: "1px solid #1e293b",
+            }}
+          >
+            <h3 style={{ color: "#fff", marginBottom: "8px", fontSize: "1.35rem" }}>
+              AI Travel Assistant
+            </h3>
+            <p style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "24px" }}>
+              Tell us where & when — get smart ideas
+            </p>
+
+            <textarea
+              placeholder="e.g. 5 days in Lisbon in October, budget €800, flights from Kyiv"
+              value={aiQuery}
+              onChange={(e) => setAiQuery(e.target.value)}
+              rows={5}
+              style={{
+                ...inputStyle,
+                resize: "vertical",
+                minHeight: "120px",
+              }}
+            />
+
+            <button
+              className="sj-btn primary"
+              style={{ width: "100%", marginTop: "16px" }}
+              onClick={handleAISubmit}
+            >
+              Get Ideas
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Спільний стиль для інпутів
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  padding: "12px 14px",
+  borderRadius: "10px",
+  border: "1px solid #334155",
+  background: "#1e293b",
+  color: "#fff",
+  fontSize: "0.95rem",
+  outline: "none",
+};
 // --- ПОШУК АВІАКВИТКІВ ---
 function TravelAccessSection(): React.JSX.Element {
   // Ваше партнерське посилання на Trip.com (замініть базовий лінк на ваше реферальне, якщо є)
@@ -416,28 +624,24 @@ function FutureSection(): React.JSX.Element {
           </p>
         </div>
 
-        {/* ПАРТНЕРСЬКИЙ ХАБ (БЕЗ ВБУДОВАНИХ СТИЛІВ, ВСЕ СТИЛІЗОВАНО ЧЕРЕЗ КЛАСИ) */}
-        <div className="sj-partners-container">
-          <div className="sj-partners-main-badge">
-            Official Infrastructure Partners
-          </div>
-          
-          <div className="sj-partners-split-grid">
-            {/* WALLESTER */}
-            <div className="sj-partner-mini-block">
-              <h3>Wallester Infrastructure</h3>
-              <p>Advanced corporate Visa card issuance, instant digital onboarding, and elite spending controls.</p>
-              <a
-                href="https://wallester.com"
-                target="_blank"
-                rel="noreferrer"
-                className="sj-btn primary sj-partner-btn-neon"
-              >
-                Issue Cards via Wallester →
-              </a>
-            </div>
-
-            {/* WISE */}
+        {/* INTEGRATED CARD PARTNER BLOCK */}
+        <div className="sj-partner-card-block">
+          <div className="sj-partner-badge">Official Card Infrastructure Partner</div>
+          <h3>Co-Branded Card Integration</h3>
+          <p>
+            We operate with trusted European payment networks. Enjoy zero FX fees, elite spending controls, 
+            and instant digital onboarding via our dedicated partner gateway.
+          </p>
+          <a
+            href="https://wallester.com/atrk?c=00fe5bd3-1975-4bfe-89bc-0c2631357a6b&promo=direct_link"
+            target="_blank"
+            rel="noreferrer"
+            className="sj-btn primary sj-partner-btn"
+          >
+            Issue Safe Journey Card via Wallester →
+          </a>
+        </div>
+ {/* WISE */}
             <div className="sj-partner-mini-block">
               <h3>Wise Business Banking</h3>
               <p>Multi-currency business accounts, real exchange rates, and international payment routing.</p>
@@ -450,9 +654,7 @@ function FutureSection(): React.JSX.Element {
                 Open Account via Wise →
               </a>
             </div>
-          </div>
-        </div>
-
+                  
         {/* PHASE 2 */}
         <div className="sj-roadmap-item">
           <span className="sj-step">Phase 2</span>
@@ -643,7 +845,7 @@ export default function App(): React.JSX.Element {
     <div className="sj-layout">
       <Navbar onJoinClick={handleOpenJoin} onSignInClick={() => setIsSignInOpen(true)} />
       <Hero onJoinClick={handleOpenJoin} />
-      
+      <SearchAndAISection />
       <main className="sj-main">
         <CryptoTransferSection />
         <BenefitsSection />
@@ -823,4 +1025,3 @@ function SignInModal({ isOpen, onClose, onSwitchToJoin }: SignInModalProps): Rea
     </div>
   );
 }
-
