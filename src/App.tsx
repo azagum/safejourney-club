@@ -186,8 +186,7 @@ function SearchAndAISection() {
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
   const [aiQuery, setAiQuery] = useState("");
-  const [aiOpen, setAiOpen] = useState(false);
-
+  
   // Classic Search — поки deep link (швидко і безпечно)
   const handleClassicSearch = (provider: "kayak" | "trip") => {
     if (!from || !to || !date) {
