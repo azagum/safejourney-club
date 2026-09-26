@@ -24,33 +24,36 @@ interface Tier {
 }
 const tiers: Tier[] = [
   {
-    name: "Explorer",
-    price: "Free",
-    badge: "",
-    perks: [
-      "Access to Safe Journey newsletter",
-      "Hand-picked travel tips & tricks",
-      "Occasional promo deals and discounts",
-    ],
-  },
+  name: "Explorer",
+  price: "Free",
+  badge: "",
+  perks: [
+    "Access to Safe Journey newsletter",
+    "Selected travel tips and Safe Warnings",
+    "Occasional member deals and early previews",
+    "Basic club orientation and updates", 
+  ],
+},
   {
     name: "Member",
-    price: "€19 / year", // Прибрали Coming soon, поставили ціну
+    price: "€19 / year",
     badge: "Most popular",
     perks: [
-      "Preferred pricing on selected hotels & stays",
-      "Priority access to new travel products",
-      "Invitations to early pilot programs",
+      "Preferred access to selected hotels & stays",
+      "Priority to new Club tools and pilot offers",
+      "Full Safe Journey Advisor briefs",
+      "Invitations to early member programs",
     ],
   },
   {
     name: "Black Circle",
-    price: "Bespoke / Custom", // Прибрали Waitlist, додали преміальний статус
-    badge: "Elite Tier",
+    price: "Bespoke / Custom",
+    badge: "Elite tier",
     perks: [
-      "Closed-circle curated travel & lifestyle",
-      "Access to RWA & co-ownership pilots",
-      "Personal concierge touch (limited spots)",
+      "Closed-circle curated travel & lifestyle access",
+      "Priority on RWA / co-ownership pilots",
+      "Personal concierge-style support (limited)",
+      "Highest visibility on new Club experiments",
     ],
   },
 ];
@@ -107,40 +110,38 @@ function Hero({ onJoinClick }: HeroProps): React.JSX.Element {
     <header className="sj-hero" id="overview">
       <div className="sj-hero-inner">
         <div className="sj-hero-left">
-          <span className="sj-chip">Safe Journey Club · Travel & RWA</span>
+          <span className="sj-chip">Safe Journey Club · Members only mindset</span>
 
-          <h1>
-            A modern members club for{" "}
-            <span className="sj-gradient-text">smarter journeys</span>.
-          </h1>
+          <h1>Welcome to the Club</h1>
+
+          <p className="sj-hero-sub" style={{ fontSize: "1.25rem", fontWeight: 600 }}>
+            <span className="sj-gradient-text">
+              Smarter routes. Clearer risks. Better control.
+            </span>
+          </p>
 
           <p className="sj-hero-sub">
-            Safe Journey Club starts as a premium travel & lifestyle layer and
-            evolves into a gateway to real-world assets and tokenized rewards —
-            for people who want more control, more transparency, and better
-            journeys.
+            A modern members club for people who want calmer, more intentional travel.
           </p>
 
           <div className="sj-hero-actions">
-            {/* Головна кнопка тепер активна та відкриває безкоштовну реєстрацію */}
-            <button 
-              className="sj-btn primary sj-btn-large" 
+            <button
+              className="sj-btn primary sj-btn-large"
               onClick={() => onJoinClick("Explorer")}
             >
-              Get Instant Club Access — Free
+              Join the Club — Free
             </button>
-            
-            {/* Кнопка плавного скролу до опису клубу */}
-            <button 
-              className="sj-btn ghost sj-btn-large" 
+
+            <button
+              className="sj-btn ghost sj-btn-large"
               onClick={handleLearnMore}
             >
-              Learn how it works
+              See how it works
             </button>
           </div>
 
           <div className="sj-hero-meta">
-            <span>🧭 Travel, RWA & rewards — step by step</span>
+            <span>Explorer access is free. No noise. No pressure.</span>
           </div>
         </div>
 
@@ -179,6 +180,26 @@ function Hero({ onJoinClick }: HeroProps): React.JSX.Element {
         </div>
       </div>
     </header>
+  );
+}
+function ManifestoSection() {
+  return (
+    <section className="sj-section" style={{ padding: "48px 20px", textAlign: "center" }}>
+      <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+        <h2 style={{ marginBottom: "16px" }}>Not a booking site. A members club.</h2>
+        <p style={{ color: "#64748b", lineHeight: 1.7, marginBottom: "12px" }}>
+          Safe Journey Club exists for people who travel with intention.
+          We look for clearer routes, better timing, and fewer surprises.
+        </p>
+        <p style={{ color: "#64748b", lineHeight: 1.7 }}>
+          Members get practical advantages: smarter search, safety briefings,
+          and access to selected partners.
+        </p>
+        <p style={{ marginTop: "20px", fontWeight: 600 }}>
+          Travel with more control.
+        </p>
+      </div>
+    </section>
   );
 }
 function SearchAndAISection() {
@@ -240,8 +261,8 @@ function SearchAndAISection() {
     }
   }
 
-  // Звідки (поки за замовчуванням Київ)
-  let fromCode = "KBP";
+  // Звідки (поки за замовчуванням Варшава)
+  let fromCode = "WAW";
   if (text.includes("from warsaw") || text.includes("з варшави")) fromCode = "WAW";
   if (text.includes("from berlin") || text.includes("з берліна")) fromCode = "BER";
 
@@ -608,7 +629,8 @@ function FutureSection(): React.JSX.Element {
       <div className="sj-section-header">
         <h2>The Journey: From Travel Club to RWA Layer</h2>
         <p>
-          Safe Journey Club is built deliberately and slowly — establishing trust, real-world utility, and robust compliance partnerships first.
+          Safe Journey Club is built deliberately and slowly — establishing
+          trust, real-world utility, and robust compliance partnerships first.
         </p>
       </div>
 
@@ -618,49 +640,148 @@ function FutureSection(): React.JSX.Element {
           <span className="sj-step">Phase 1</span>
           <h3>Travel & Perks Foundation</h3>
           <p>
-            Curated bookings, insurance coordination, and premium travel lifestyle benefits 
-            for members — completely localized and friction-free.
+            Curated bookings, insurance coordination, and premium travel
+            lifestyle benefits for members — completely localized and
+            friction-free.
           </p>
         </div>
 
-        {/* INTEGRATED CARD PARTNER BLOCK */}
-        <div className="sj-partner-card-block">
-          <div className="sj-partner-badge">Official Card Infrastructure Partner</div>
-          <h3>Co-Branded Card Integration</h3>
-          <p>
-            We operate with trusted European payment networks. Enjoy zero FX fees, elite spending controls, 
-            and instant digital onboarding via our dedicated partner gateway.
-          </p>
-          <a
-            href="https://wallester.com/atrk?c=00fe5bd3-1975-4bfe-89bc-0c2631357a6b&promo=direct_link"
-            target="_blank"
-            rel="noreferrer"
-            className="sj-btn primary sj-partner-btn"
+        {/* OFFICIAL INFRASTRUCTURE PARTNERS */}
+        <div style={{ margin: "40px 0", textAlign: "center" }}>
+          <div
+            style={{
+              color: "#2dd4bf",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              letterSpacing: "0.08em",
+              marginBottom: "20px",
+              textTransform: "uppercase",
+            }}
           >
-            Issue Safe Journey Card via Wallester →
-          </a>
-        </div>
- {/* WISE */}
-            <div className="sj-partner-mini-block">
-              <h3>Wise Business Banking</h3>
-              <p>Multi-currency business accounts, real exchange rates, and international payment routing.</p>
+            Official Infrastructure Partners
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              maxWidth: "900px",
+              margin: "0 auto",
+            }}
+          >
+            {/* Wallester */}
+            <div
+              style={{
+                background: "#0f172a",
+                borderRadius: "16px",
+                padding: "28px 24px",
+                textAlign: "left",
+                border: "1px solid #1e293b",
+              }}
+            >
+              <h3
+                style={{
+                  color: "#fff",
+                  fontSize: "1.15rem",
+                  marginBottom: "10px",
+                }}
+              >
+                Wallester Infrastructure
+              </h3>
+              <p
+                style={{
+                  color: "#94a3b8",
+                  fontSize: "0.9rem",
+                  lineHeight: 1.5,
+                  marginBottom: "20px",
+                }}
+              >
+                Advanced corporate Visa card issuance, instant digital
+                onboarding, and elite spending controls.
+              </p>
               <a
-                href="https://wise.com"
+                href="https://wallester.com/atrk?c=00fe5bd3-1975-4bfe-89bc-0c2631357a6b&promo=direct_link"
                 target="_blank"
                 rel="noreferrer"
-                className="sj-btn primary sj-partner-btn-neon"
+                style={{
+                  display: "inline-block",
+                  width: "100%",
+                  textAlign: "center",
+                  background: "#2dd4bf",
+                  color: "#0f172a",
+                  fontWeight: 600,
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  textDecoration: "none",
+                  boxSizing: "border-box",
+                }}
+              >
+                Issue Cards via Wallester →
+              </a>
+            </div>
+
+            {/* Wise */}
+            <div
+              style={{
+                background: "#0f172a",
+                borderRadius: "16px",
+                padding: "28px 24px",
+                textAlign: "left",
+                border: "1px solid #1e293b",
+              }}
+            >
+              <h3
+                style={{
+                  color: "#fff",
+                  fontSize: "1.15rem",
+                  marginBottom: "10px",
+                }}
+              >
+                Wise Business Banking
+              </h3>
+              <p
+                style={{
+                  color: "#94a3b8",
+                  fontSize: "0.9rem",
+                  lineHeight: 1.5,
+                  marginBottom: "20px",
+                }}
+              >
+                Multi-currency business accounts, real exchange rates, and
+                international payment routing.
+              </p>
+              <a
+                href="https://wise.com/register#/email"
+                target="_blank"
+                rel="noreferrer"
+                style={{
+                  display: "inline-block",
+                  width: "100%",
+                  textAlign: "center",
+                  background: "#2dd4bf",
+                  color: "#0f172a",
+                  fontWeight: 600,
+                  padding: "12px 16px",
+                  borderRadius: "10px",
+                  textDecoration: "none",
+                  boxSizing: "border-box",
+                }}
               >
                 Open Account via Wise →
               </a>
             </div>
-                  
+          </div>
+        </div>
+
         {/* PHASE 2 */}
         <div className="sj-roadmap-item">
           <span className="sj-step">Phase 2</span>
           <h3>Global Web3 Remittances</h3>
           <p>
-            Integration of Solana and Ripple liquidity bridges to provide high-speed, 
-            ultra-low-fee worldwide transfers disguised as a premium loyalty perk.
+            Integration of Solana and Ripple liquidity bridges to provide
+            high-speed, ultra-low-fee worldwide transfers disguised as a
+            premium loyalty perk.
           </p>
         </div>
 
@@ -669,8 +790,9 @@ function FutureSection(): React.JSX.Element {
           <span className="sj-step">Phase 3</span>
           <h3>RWA & Co-Ownership Pilots</h3>
           <p>
-            Carefully structured real-world asset experiments — for example, 
-            co-owned stays, premium properties, and curated transport housing pilots.
+            Carefully structured real-world asset experiments — for example,
+            co-owned stays, premium properties, and curated transport housing
+            pilots.
           </p>
         </div>
       </div>
@@ -764,7 +886,7 @@ function Footer({ onOpenTerms, onOpenPrivacy }: FooterProps): React.JSX.Element 
             <span className="sj-logo-mark" />
             <span className="sj-logo-text">Safe Journey Club</span>
           </div>
-          <p className="sj-footer-text">A modern club for travel, rewards, and future RWA journeys.</p>
+          <p className="sj-footer-text">Not a booking site. A members club for smarter, safer journeys.</p>
         </div>
         <div className="sj-footer-cols">
           
@@ -844,6 +966,7 @@ export default function App(): React.JSX.Element {
     <div className="sj-layout">
       <Navbar onJoinClick={handleOpenJoin} onSignInClick={() => setIsSignInOpen(true)} />
       <Hero onJoinClick={handleOpenJoin} />
+      <ManifestoSection />
       <SearchAndAISection />
       <main className="sj-main">
         <CryptoTransferSection />
@@ -976,8 +1099,7 @@ function JoinModal({ isOpen, onClose, selectedTier }: JoinModalProps): React.JSX
                 {selectedTier === "Black Circle" && chosenVerification === "WORLD_ID" && "Your World ID verification request has been securely processed. Once approved on-chain, your custom Black Card will be minted."}
               </p>
               <button className="sj-btn ghost" onClick={onClose} style={{ marginTop: "20px" }}>Close Window</button>
-            </div>
-          )}
+            </div>)}
         </div>
       </div>
     </div>
