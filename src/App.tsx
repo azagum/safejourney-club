@@ -74,6 +74,7 @@ function Navbar({ onJoinClick, onSignInClick }: NavbarProps): React.JSX.Element 
 
         <div className="sj-nav-links">
           <a href="#overview">Overview</a>
+          <a href="#esim">eSIM</a>
           <a href="#transfers">Fast Transfers</a>
           <a href="#benefits">Benefits</a>
           <a href="#tiers">Membership</a>
@@ -198,6 +199,141 @@ function ManifestoSection() {
         <p style={{ marginTop: "20px", fontWeight: 600 }}>
           Travel with more control.
         </p>
+      </div>
+    </section>
+  );
+}
+function EsimSection(): React.JSX.Element {
+  return (
+    <section id="esim" className="sj-section">
+      <div className="sj-section-header">
+        <h2>Safe Journey eSIM</h2>
+        <p>
+          Stay online abroad without roaming surprises. Instant activation,
+          global coverage, and a branded network experience for members.
+        </p>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1.2fr 1fr",
+          gap: "24px",
+          maxWidth: "960px",
+          margin: "0 auto",
+          alignItems: "stretch",
+        }}
+      >
+        {/* Main card */}
+        <div
+          style={{
+            background: "#0f172a",
+            borderRadius: "16px",
+            padding: "28px 24px",
+            border: "1px solid #1e293b",
+            color: "#e2e8f0",
+          }}
+        >
+          <div
+            style={{
+              display: "inline-block",
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "#2dd4bf",
+              marginBottom: "12px",
+            }}
+          >
+            Member connectivity
+          </div>
+
+          <h3 style={{ color: "#fff", fontSize: "1.35rem", marginBottom: "12px" }}>
+            Data that travels with you
+          </h3>
+
+          <p style={{ color: "#94a3b8", lineHeight: 1.6, marginBottom: "20px" }}>
+            Get a travel eSIM before you fly. Activate with a QR code, keep your
+            primary number, and avoid expensive roaming bills.
+          </p>
+
+          <ul
+            style={{
+              listStyle: "none",
+              padding: 0,
+              margin: "0 0 24px 0",
+              display: "grid",
+              gap: "10px",
+              color: "#cbd5e1",
+              fontSize: "0.95rem",
+            }}
+          >
+            <li>✓ Instant QR activation</li>
+            <li>✓ Branded Safe Journey network experience</li>
+            <li>✓ Destination and regional data packs</li>
+            <li>✓ Keep your home SIM for calls & SMS</li>
+          </ul>
+
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
+            <a
+              href="#membership"
+              className="sj-btn primary"
+              style={{ textDecoration: "none" }}
+            >
+              Unlock with Membership
+            </a>
+            <a
+              href="mailto:safej2013@gmail.com?subject=Safe%20Journey%20eSIM%20request"
+              className="sj-btn ghost"
+              style={{ textDecoration: "none" }}
+            >
+              Request eSIM
+            </a>
+          </div>
+        </div>
+
+        {/* Side card */}
+        <div
+          style={{
+            background: "linear-gradient(160deg, #1e1b4b 0%, #0f172a 100%)",
+            borderRadius: "16px",
+            padding: "28px 24px",
+            border: "1px solid #312e81",
+            color: "#e2e8f0",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <h4 style={{ color: "#fff", marginBottom: "12px", fontSize: "1.1rem" }}>
+            How it works
+          </h4>
+          <ol
+            style={{
+              margin: 0,
+              paddingLeft: "18px",
+              color: "#94a3b8",
+              lineHeight: 1.7,
+              fontSize: "0.95rem",
+            }}
+          >
+            <li>Choose destination & data pack</li>
+            <li>Receive QR in your member area / email</li>
+            <li>Install before you land</li>
+            <li>Turn on data roaming and go</li>
+          </ol>
+
+          <p
+            style={{
+              marginTop: "20px",
+              fontSize: "0.85rem",
+              color: "#64748b",
+            }}
+          >
+            Full self-serve checkout and live packages are rolling out next.
+            Members get early access and preferred rates.
+          </p>
+        </div>
       </div>
     </section>
   );
@@ -967,6 +1103,7 @@ export default function App(): React.JSX.Element {
       <Navbar onJoinClick={handleOpenJoin} onSignInClick={() => setIsSignInOpen(true)} />
       <Hero onJoinClick={handleOpenJoin} />
       <ManifestoSection />
+      <EsimSection />
       <SearchAndAISection />
       <main className="sj-main">
         <CryptoTransferSection />

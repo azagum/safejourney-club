@@ -1100,3 +1100,8 @@ a {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(100, 255, 218, 0.25);
 }
+@media (max-width: 768px) {
+  #esim [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+}
