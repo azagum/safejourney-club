@@ -91,6 +91,9 @@ function Navbar({ onJoinClick, onSignInClick }: NavbarProps): React.JSX.Element 
           <button className="sj-btn primary" onClick={() => onJoinClick("Explorer")}>
             Join the Club
           </button>
+          <a href="/ua" className="sj-btn ghost" style={{ textDecoration: "none" }}>
+  UA
+</a>
         </div>
       </div>
     </nav>
@@ -1054,11 +1057,13 @@ function Footer({ onOpenTerms, onOpenPrivacy }: FooterProps): React.JSX.Element 
           <div>
             <h4>Contact</h4>
             <a href="mailto:info@safejourney.club">info@safejourney.club</a>
+            <a href="/ua">Українська версія</a>
           </div>
         </div>
       </div>
       <div className="sj-footer-bottom">
         <span>© {new Date().getFullYear()} Safe Journey Club</span>
+        <a href="/ua" style={{ color: "#94a3b8", marginLeft: 12 }}>UA</a>
         <span>Not financial advice. Not an investment product.</span>
         <span style={{ color: "#64748b" }}>Travel insurance (EU) — Coming soon</span>
       </div>
