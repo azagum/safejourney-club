@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useEffect } from "react";
+import UaClubPage from "./UaClubPage";
+import InsuranceUaPage from "./InsuranceUa";
 import "./index.css";
 
 const features = [
@@ -1058,6 +1060,7 @@ function Footer({ onOpenTerms, onOpenPrivacy }: FooterProps): React.JSX.Element 
       <div className="sj-footer-bottom">
         <span>© {new Date().getFullYear()} Safe Journey Club</span>
         <span>Not financial advice. Not an investment product.</span>
+        <span style={{ color: "#64748b" }}>Travel insurance (EU) — Coming soon</span>
       </div>
     </footer>
   );
@@ -1097,7 +1100,13 @@ export default function App(): React.JSX.Element {
     setInitialModalTab(tab);
     setIsTermsOpen(true);
   };
-
+// Сторінка страхування UA — окремий екран, головну не чіпаємо
+  if (window.location.pathname === "/insurance-ua") {
+    return <InsuranceUaPage />;
+  }
+  if (window.location.pathname === "/ua") {
+    return <UaClubPage />;
+  }
   return (
     <div className="sj-layout">
       <Navbar onJoinClick={handleOpenJoin} onSignInClick={() => setIsSignInOpen(true)} />
