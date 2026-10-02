@@ -83,13 +83,6 @@ a {
   font-size: 0.95rem;
 }
 
-.sj-logo-mark {
-  width: 22px;
-  height: 22px;
-  border-radius: 999px;
-  background-image: conic-gradient(from 140deg, #4f46e5, #7c3aed, #ec4899);
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6);
-}
 
 .sj-logo-text {
   font-size: 0.98rem;
@@ -1104,4 +1097,9 @@ a {
   #esim [style*="grid-template-columns"] {
     grid-template-columns: 1fr !important;
   }
+}
+.sj-logo-img {
+  border-radius: 50%;
+  display: block;
+  object-fit: cover;
 }

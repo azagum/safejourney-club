@@ -70,7 +70,13 @@ function Navbar({ onJoinClick, onSignInClick }: NavbarProps): React.JSX.Element 
     <nav className="sj-nav">
       <div className="sj-nav-inner">
         <div className="sj-logo">
-          <span className="sj-logo-mark" />
+          <img
+  src="/logo-sj.png"
+  alt="Safe Journey Club"
+  className="sj-logo-img"
+  width={36}
+  height={36}
+/>
           <span className="sj-logo-text">Safe Journey Club</span>
         </div>
 
@@ -165,7 +171,19 @@ function Hero({ onJoinClick }: HeroProps): React.JSX.Element {
             <div className="sj-card-visual">
               <div className="sj-virtual-card">
                 <div className="sj-virtual-top">
-                  <span className="sj-virtual-logo">SJ</span>
+                  <span className="sj-virtual-logo">
+                    <img
+                      src="/logo-sj-card.png"
+                      alt="SJ"
+                      width={40}
+                      height={40}
+                      style={{
+                        display: "block",
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  </span>
                   <span className="sj-virtual-tier">Black Circle</span>
                 </div>
                 <div className="sj-virtual-number">
