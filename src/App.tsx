@@ -214,8 +214,8 @@ function EsimSection(): React.JSX.Element {
       <div className="sj-section-header">
         <h2>Safe Journey eSIM</h2>
         <p>
-          Stay online abroad without roaming surprises. Instant activation,
-          global coverage, and a branded network experience for members.
+          Local-style data in your destination — without a store visit,
+          a local ID queue, or a long contract.
         </p>
       </div>
 
@@ -250,16 +250,17 @@ function EsimSection(): React.JSX.Element {
               marginBottom: "12px",
             }}
           >
-            Member connectivity
+            Destination connectivity
           </div>
 
           <h3 style={{ color: "#fff", fontSize: "1.35rem", marginBottom: "12px" }}>
-            Data that travels with you
+            Feel local. Skip the paperwork.
           </h3>
 
           <p style={{ color: "#94a3b8", lineHeight: 1.6, marginBottom: "20px" }}>
-            Get a travel eSIM before you fly. Activate with a QR code, keep your
-            primary number, and avoid expensive roaming bills.
+            Buy a destination eSIM before you fly. Install with a QR code,
+            keep your home number, and use data like a local plan —
+            without visiting a shop or signing a local contract.
           </p>
 
           <ul
@@ -273,15 +274,15 @@ function EsimSection(): React.JSX.Element {
               fontSize: "0.95rem",
             }}
           >
-            <li>✓ Instant QR activation</li>
+            <li>✓ Country & regional data packs</li>
+            <li>✓ QR activation before you land</li>
+            <li>✓ Keep your primary SIM for calls & SMS</li>
             <li>✓ Branded Safe Journey network experience</li>
-            <li>✓ Destination and regional data packs</li>
-            <li>✓ Keep your home SIM for calls & SMS</li>
           </ul>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "12px" }}>
             <a
-              href="#membership"
+              href="#tiers"
               className="sj-btn primary"
               style={{ textDecoration: "none" }}
             >
@@ -295,6 +296,19 @@ function EsimSection(): React.JSX.Element {
               Request eSIM
             </a>
           </div>
+
+          <p
+            style={{
+              marginTop: "18px",
+              fontSize: "0.8rem",
+              color: "#64748b",
+              lineHeight: 1.5,
+            }}
+          >
+            Currently offered as destination packs (one country or region per
+            plan). Global multi-country packs will be added as our connectivity
+            partners enable them.
+          </p>
         </div>
 
         {/* Side card */}
@@ -322,8 +336,8 @@ function EsimSection(): React.JSX.Element {
               fontSize: "0.95rem",
             }}
           >
-            <li>Choose destination & data pack</li>
-            <li>Receive QR in your member area / email</li>
+            <li>Choose your destination country or region</li>
+            <li>Get a QR code in your member area / email</li>
             <li>Install before you land</li>
             <li>Turn on data roaming and go</li>
           </ol>
@@ -333,10 +347,11 @@ function EsimSection(): React.JSX.Element {
               marginTop: "20px",
               fontSize: "0.85rem",
               color: "#64748b",
+              lineHeight: 1.5,
             }}
           >
-            Full self-serve checkout and live packages are rolling out next.
-            Members get early access and preferred rates.
+            Best for trips focused on one country or region. For frequent
+            multi-stop travel, multi-country options are on the roadmap.
           </p>
         </div>
       </div>
