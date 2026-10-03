@@ -394,7 +394,7 @@ function SearchAndAISection() {
       const url = `https://www.kayak.com/flights/${from.toUpperCase()}-${to.toUpperCase()}/${date}?sort=bestflight_a`;
       window.open(url, "_blank");
     } else {
-      const url = `https://www.trip.com/flights/${from.toLowerCase()}-${to.toLowerCase()}/${date}.html`;
+      const url = "https://www.trip.com/flights/?Allianceid=7455498&SID=283527301";
       window.open(url, "_blank");
     }
   };
@@ -408,6 +408,8 @@ function SearchAndAISection() {
   const cityMap: Record<string, string> = {
     lisbon: "LIS",
     лісабон: "LIS",
+    dublin: "DUB",
+    дублін: "DUB",
     barcelona: "BCN",
     барселона: "BCN",
     istanbul: "IST",
@@ -422,10 +424,7 @@ function SearchAndAISection() {
     дубай: "DXB",
     paris: "CDG",
     парижа: "CDG",
-    kyiv: "KBP",
-    київ: "KBP",
-    kiev: "KBP",
-  };
+    };
 
   let toCode = "LIS"; // fallback
   for (const [name, code] of Object.entries(cityMap)) {
@@ -435,9 +434,9 @@ function SearchAndAISection() {
     }
   }
 
-  // Звідки (поки за замовчуванням Варшава)
-  let fromCode = "WAW";
-  if (text.includes("from warsaw") || text.includes("з варшави")) fromCode = "WAW";
+  // Звідки (поки за замовчуванням Дублін)
+  let fromCode = "DUB";
+  if (text.includes("from dublin") || text.includes("з дубліна")) fromCode = "DUB";
   if (text.includes("from berlin") || text.includes("з берліна")) fromCode = "BER";
 
   // Дата (дуже спрощено — беремо +30 днів, якщо не знайшли)
@@ -446,12 +445,12 @@ function SearchAndAISection() {
   const dateStr = date.toISOString().slice(0, 10);
 
   // Відкриваємо Kayak
-  const kayakUrl = `https://www.kayak.com/flights/${fromCode}-${toCode}/${dateStr}?sort=bestflight_a`;
-  window.open(kayakUrl, "_blank");
+  //const kayakUrl = `https://www.kayak.com/flights/${fromCode}-${toCode}/${dateStr}?sort=bestflight_a`;
+  //window.open(kayakUrl, "_blank");
 
   // Можна також відкрити Trip.com
-  // const tripUrl = `https://www.trip.com/flights/${fromCode.toLowerCase()}-${toCode.toLowerCase()}/${dateStr}.html`;
-  // window.open(tripUrl, "_blank");
+  const tripUrl = "https://www.trip.com/flights/?Allianceid=7455498&SID=283527301";
+  window.open(tripUrl, "_blank");
 
   console.log("AI parsed:", { fromCode, toCode, dateStr, original: aiQuery });
   setAiQuery("");
@@ -493,7 +492,7 @@ function SearchAndAISection() {
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
               <input
                 type="text"
-                placeholder="From (e.g. KBP)"
+                placeholder="From (e.g. DUB)"
                 value={from}
                 onChange={(e) => setFrom(e.target.value)}
                 style={inputStyle}
@@ -548,7 +547,7 @@ function SearchAndAISection() {
             </p>
 
             <textarea
-              placeholder="e.g. 5 days in Lisbon in October, budget €800, flights from Kyiv"
+              placeholder="e.g. 5 days in Lisbon in October, budget €800, flights from Dublin"
               value={aiQuery}
               onChange={(e) => setAiQuery(e.target.value)}
               rows={5}
@@ -926,7 +925,7 @@ function FutureSection(): React.JSX.Element {
                 international payment routing.
               </p>
               <a
-                href="https://wise.com/register#/email"
+                href="https://wise.com/invite/dic/oleksiiz72"
                 target="_blank"
                 rel="noreferrer"
                 style={{
