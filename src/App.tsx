@@ -782,56 +782,117 @@ const inputStyle: React.CSSProperties = {
   fontSize: "0.95rem",
   outline: "none",
 };
-// --- ПОШУК АВІАКВИТКІВ ---
+// --- ПОШУК ГОТЕЛІВ ---
+const stayCards = [
+  {
+    name: "Seafront city hotel",
+    place: "Lisbon, Portugal",
+    score: "4.7",
+    reviews: "1,284 reviews",
+    snippet: "Walk to the waterfront. Quiet rooms, strong breakfast.",
+    image:
+      "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    name: "Old town stay",
+    place: "Prague, Czechia",
+    score: "4.6",
+    reviews: "986 reviews",
+    snippet: "Central location. Good for a short city break.",
+    image:
+      "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    name: "Harbour view hotel",
+    place: "Dubai, UAE",
+    score: "4.8",
+    reviews: "2,104 reviews",
+    snippet: "High floor views. Pool and late check-out often available.",
+    image:
+      "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80",
+  },
+];
+
 function TravelAccessSection(): React.JSX.Element {
-  // Ваше партнерське посилання на Trip.com (замініть базовий лінк на ваше реферальне, якщо є)
-  const tripFlightsUrl = "https://www.trip.com/flights/?Allianceid=7455498&SID=283527301"; 
   const tripHotelsUrl = "https://www.trip.com/t/2uaIDWYHiS2";
 
   return (
     <section className="sj-section sj-section-alt">
       <div className="sj-section-header">
-        <h2>Smarter Journeys, Zero Friction</h2>
-        <p>
-          Compare routes and book directly with our trusted global travel partner. 
-          <strong> Safe Journey Club</strong> never adds markups or hidden fees.
-        </p>
+        <h2>Stays</h2>
+<p>
+  A few places members look at first. Photos and guest scores here, live prices on our hotel partner.
+</p>
       </div>
 
-      {/* Нова преміальна сітка з двома великими інтерактивними кнопками */}
-      <div className="sj-travel-hub-grid">
-        <a 
-          href={tripFlightsUrl} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="sj-travel-card"
-        >
-          <div className="sj-travel-icon">✈️</div>
-          <div className="sj-travel-info">
-            <h3>Find Best Flights</h3>
-            <p>Search global routes, airlines, and real-time schedules on Trip.com</p>
-          </div>
-          <span className="sj-travel-arrow">→</span>
-        </a>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          gap: "18px",
+        }}
+      >
+        {stayCards.map((hotel) => (
+          <a
+            key={hotel.name}
+            href={tripHotelsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "block",
+              background: "#0f172a",
+              borderRadius: "18px",
+              overflow: "hidden",
+              border: "1px solid #1e293b",
+              textDecoration: "none",
+              color: "inherit",
+            }}
+          >
+            <div style={{ position: "relative", height: "180px" }}>
+              <img
+                src={hotel.image}
+                alt={hotel.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  left: "12px",
+                  bottom: "12px",
+                  background: "#111827",
+                  color: "#fff",
+                  borderRadius: "10px",
+                  padding: "6px 10px",
+                  fontWeight: 700,
+                }}
+              >
+                {hotel.score}
+                <span style={{ fontWeight: 500, opacity: 0.7 }}> / 5</span>
+              </div>
+            </div>
 
-        <a 
-          href={tripHotelsUrl} 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="sj-travel-card"
-        >
-          <div className="sj-travel-icon">🏨</div>
-          <div className="sj-travel-info">
-            <h3>Search Hotels & Stays</h3>
-            <p>Access exclusive pricing on thousands of premium properties worldwide</p>
-          </div>
-          <span className="sj-travel-arrow">→</span>
-        </a>
+            <div style={{ padding: "16px" }}>
+              <h3 style={{ margin: "0 0 4px", color: "#fff", fontSize: "1.05rem" }}>
+                {hotel.name}
+              </h3>
+              <p style={{ margin: "0 0 8px", color: "#94a3b8", fontSize: "0.9rem" }}>
+                {hotel.place}
+              </p>
+              <p style={{ margin: "0 0 10px", color: "#cbd5e1", fontSize: "0.92rem" }}>
+                {hotel.snippet}
+              </p>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ color: "#DBB558", fontSize: "0.85rem" }}>{hotel.reviews}</span>
+                <span style={{ color: "#e2e8f0", fontSize: "0.9rem" }}>See prices →</span>
+              </div>
+            </div>
+          </a>
+        ))}
       </div>
 
-      <p className="sj-flight-note text-center">
-        ℹ️ You will be redirected securely to our booking partner. Member cashback benefits and integrated blockchain rewards are coming soon.
-      </p>
+      <p className="sj-flight-note text-center" style={{ marginTop: "18px" }}>
+  Sample stays. Choose city and dates on the partner page.
+</p>
     </section>
   );
 }
