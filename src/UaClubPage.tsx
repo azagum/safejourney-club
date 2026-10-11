@@ -181,7 +181,7 @@ function UaClubPage(): React.JSX.Element {
             © {new Date().getFullYear()} Safe Journey Club
           </div>
           <div>
-            Safe Journey Club Limited (Ireland) ·{" "}
+            ТОВ "Щасливої дороги" ·{" "}
             <a href="/" style={{ color: "#94a3b8" }}>
               safejourney.club
             </a>

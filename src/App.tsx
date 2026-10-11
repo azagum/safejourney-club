@@ -1,5 +1,10 @@
 import { useState } from "react";
 import { useEffect } from "react";
+// later: useEffect(() => { if (externalCycle) setCycle(externalCycle); }, [externalCycle]);
+import ClubProgressJar from "./components/ClubProgressJar";<ClubProgressJar
+  showDemoControls={true}
+  memberContribution={3}
+  memberEligible={true}/>
 import UaClubPage from "./UaClubPage";
 import InsuranceUaPage from "./InsuranceUa";
 import "./index.css";
@@ -376,13 +381,129 @@ function EsimSection(): React.JSX.Element {
     </section>
   );
 }
+type FlightCard = {
+  id: string;
+  route: string;
+  when: string;
+  flights: string;
+  stops: string;
+  price: string;
+};
+
+function asArray<T>(value: T | T[] | undefined | null): T[] {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
+}
+
+function formatTime(value?: string) {
+  if (!value) return "";
+  const match = value.match(/(\d{2}:\d{2})/);
+  return match ? match[1] : value.slice(11, 16);
+}
+
+function extractOffers(json: any): FlightCard[] {
+  const root = json?.CatalogProductOfferingsResponse || json;
+  const referenceLists = asArray(root?.ReferenceList);
+
+  const flightsById = new Map<string, any>();
+  const productsById = new Map<string, any>();
+
+  for (const list of referenceLists) {
+    if (list?.["@type"] === "ReferenceListFlight") {
+      for (const flight of asArray(list.Flight)) {
+        if (flight?.id) flightsById.set(flight.id, flight);
+      }
+    }
+    if (list?.["@type"] === "ReferenceListProduct") {
+      for (const product of asArray(list.Product)) {
+        if (product?.id) productsById.set(product.id, product);
+      }
+    }
+  }
+
+  const offerings = asArray(root?.CatalogProductOfferings?.CatalogProductOffering);
+  const cards: FlightCard[] = [];
+
+  offerings.forEach((offering: any, offerIndex: number) => {
+    const options = asArray(offering?.ProductBrandOptions);
+
+    options.forEach((option: any, optionIndex: number) => {
+      const brandOffers = asArray(option?.ProductBrandOffering);
+      const first = brandOffers[0];
+      if (!first) return;
+
+      const priceObj = first.BestCombinablePrice || first.Price;
+      const amount = priceObj?.TotalPrice;
+      const currency = priceObj?.CurrencyCode?.value || "";
+      if (amount == null) return;
+
+      const productRef = first?.Product?.[0]?.productRef;
+      const product = productRef ? productsById.get(productRef) : null;
+
+      const flightRefs = asArray(option?.flightRefs);
+      const segments = asArray(product?.FlightSegment);
+
+      const resolvedFlights = (
+        segments.length
+          ? segments
+              .map((seg: any) => flightsById.get(seg?.Flight?.FlightRef))
+              .filter(Boolean)
+          : flightRefs
+              .map((ref: string) => flightsById.get(ref))
+              .filter(Boolean)
+      ) as any[];
+
+      const firstFlight = resolvedFlights[0];
+      const lastFlight = resolvedFlights[resolvedFlights.length - 1];
+
+      const fromCode = offering?.Departure || firstFlight?.Departure?.location || "";
+      const toCode = offering?.Arrival || lastFlight?.Arrival?.location || "";
+
+      const dep = formatTime(
+        firstFlight?.Departure?.date || firstFlight?.Departure?.time
+      );
+      const arr = formatTime(
+        lastFlight?.Arrival?.date || lastFlight?.Arrival?.time
+      );
+
+      const flightLabel = resolvedFlights
+        .map((f) => `${f.carrier || ""}${f.number || ""}`.trim())
+        .filter(Boolean)
+        .join(" · ");
+
+      const stopCount = Math.max(resolvedFlights.length - 1, 0);
+
+      cards.push({
+        id: `${offering?.id || offerIndex}-${optionIndex}`,
+        route: `${fromCode} → ${toCode}`,
+        when: dep && arr ? `${dep} – ${arr}` : "Time on request",
+        flights: flightLabel || "Flight details",
+        stops: stopCount === 0 ? "Direct" : `${stopCount} stop${stopCount > 1 ? "s" : ""}`,
+        price: `${amount} ${currency}`.trim(),
+      });
+    });
+  });
+
+  const unique = new Map<string, FlightCard>();
+  for (const card of cards) {
+    const key = `${card.route}|${card.when}|${card.price}|${card.flights}`;
+    if (!unique.has(key)) unique.set(key, card);
+  }
+
+  return Array.from(unique.values()).slice(0, 8);
+}
+
 function SearchAndAISection() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [date, setDate] = useState("");
   const [aiQuery, setAiQuery] = useState("");
-  
-  // Classic Search — поки deep link (швидко і безпечно)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [offers, setOffers] = useState<FlightCard[]>([]);
+
+  const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
   const handleClassicSearch = (provider: "kayak" | "trip") => {
     if (!from || !to || !date) {
       alert("Please fill From, To and Date");
@@ -390,7 +511,6 @@ function SearchAndAISection() {
     }
 
     if (provider === "kayak") {
-      // Заміни YOUR_AFFILIATE_ID якщо є
       const url = `https://www.kayak.com/flights/${from.toUpperCase()}-${to.toUpperCase()}/${date}?sort=bestflight_a`;
       window.open(url, "_blank");
     } else {
@@ -399,62 +519,105 @@ function SearchAndAISection() {
     }
   };
 
-  const handleAISubmit = () => {
-  if (!aiQuery.trim()) return;
+  const runSearch = async (fromCode: string, toCode: string, dateStr: string) => {
+    setLoading(true);
+    setError("");
+    setOffers([]);
 
-  const text = aiQuery.toLowerCase();
+    try {
+      const res = await fetch(`${API_BASE}/api/flights/search`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: fromCode,
+          to: toCode,
+          date: dateStr,
+          adults: 1,
+        }),
+      });
 
-  // Просте витягування міст (можна розширювати)
-  const cityMap: Record<string, string> = {
-    lisbon: "LIS",
-    лісабон: "LIS",
-    dublin: "DUB",
-    дублін: "DUB",
-    barcelona: "BCN",
-    барселона: "BCN",
-    istanbul: "IST",
-    стамбул: "IST",
-    bangkok: "BKK",
-    бангкок: "BKK",
-    rome: "FCO",
-    рим: "FCO",
-    prague: "PRG",
-    прага: "PRG",
-    dubai: "DXB",
-    дубай: "DXB",
-    paris: "CDG",
-    парижа: "CDG",
+      const json = await res.json();
+      if (!res.ok) {
+        throw new Error(json?.error || json?.details || "Search failed");
+      }
+
+      const list = extractOffers(json);
+      if (!list.length) {
+        setError("No offers found for this route and date.");
+      } else {
+        setOffers(list);
+      }
+    } catch (e: any) {
+      setError(e?.message || "Search failed. Is the backend running?");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleClubSearch = async () => {
+    if (!from || !to || !date) {
+      alert("Please fill From, To and Date");
+      return;
+    }
+    await runSearch(from.toUpperCase(), to.toUpperCase(), date);
+  };
+
+  const handleAISubmit = async () => {
+    if (!aiQuery.trim()) return;
+
+    const text = aiQuery.toLowerCase();
+    const cityMap: Record<string, string> = {
+      lisbon: "LIS",
+      лісабон: "LIS",
+      dublin: "DUB",
+      дублін: "DUB",
+      barcelona: "BCN",
+      барселона: "BCN",
+      istanbul: "IST",
+      стамбул: "IST",
+      bangkok: "BKK",
+      бангкок: "BKK",
+      rome: "FCO",
+      рим: "FCO",
+      prague: "PRG",
+      прага: "PRG",
+      dubai: "DXB",
+      дубай: "DXB",
+      paris: "CDG",
+      париж: "CDG",
+      warsaw: "WAW",
+      варшава: "WAW",
+      "new york": "JFK",
+      "los angeles": "LAX",
+      berlin: "BER",
+      берлін: "BER",
     };
 
-  let toCode = "LIS"; // fallback
-  for (const [name, code] of Object.entries(cityMap)) {
-    if (text.includes(name)) {
-      toCode = code;
-      break;
+    let toCode = "LIS";
+    for (const [name, code] of Object.entries(cityMap)) {
+      if (text.includes(name)) {
+        toCode = code;
+        break;
+      }
     }
-  }
 
-  // Звідки (поки за замовчуванням Дублін)
-  let fromCode = "DUB";
-  if (text.includes("from dublin") || text.includes("з дубліна")) fromCode = "DUB";
-  if (text.includes("from berlin") || text.includes("з берліна")) fromCode = "BER";
+    let fromCode = "DUB";
+    if (text.includes("berlin") || text.includes("берлін")) fromCode = "BER";
+    if (text.includes("warsaw") || text.includes("варшав")) fromCode = "WAW";
+    if (text.includes("new york") || text.includes("jfk")) fromCode = "JFK";
+    if (text.includes("dublin") || text.includes("дублін")) fromCode = "DUB";
 
-  // Дата (дуже спрощено — беремо +30 днів, якщо не знайшли)
-  const date = new Date();
-  date.setDate(date.getDate() + 30);
-  const dateStr = date.toISOString().slice(0, 10);
+    const d = new Date();
+    d.setDate(d.getDate() + 30);
+    const dateStr = d.toISOString().slice(0, 10);
 
-  // Відкриваємо Kayak
-  //const kayakUrl = `https://www.kayak.com/flights/${fromCode}-${toCode}/${dateStr}?sort=bestflight_a`;
-  //window.open(kayakUrl, "_blank");
+    setFrom(fromCode);
+    setTo(toCode);
+    setDate(dateStr);
+    setAiQuery("");
 
-  // Можна також відкрити Trip.com
-  const tripUrl = "https://www.trip.com/flights/?Allianceid=7455498&SID=283527301";
-  window.open(tripUrl, "_blank");
-
-  console.log("AI parsed:", { fromCode, toCode, dateStr, original: aiQuery });
-  setAiQuery("");
-};
+    await runSearch(fromCode, toCode, dateStr);
+  };
 
   return (
     <section className="sj-section" style={{ padding: "60px 20px" }}>
@@ -463,7 +626,7 @@ function SearchAndAISection() {
           Find your next safe journey
         </h2>
         <p style={{ textAlign: "center", color: "#64748b", marginBottom: "40px" }}>
-          Classic search or describe your trip in plain language
+          Search club fares, or compare on Kayak and Trip.com
         </p>
 
         <div
@@ -473,7 +636,6 @@ function SearchAndAISection() {
             gap: "24px",
           }}
         >
-          {/* ===== CARD 1: Classic Search ===== */}
           <div
             style={{
               background: "#0f172a",
@@ -486,7 +648,7 @@ function SearchAndAISection() {
               Classic Search
             </h3>
             <p style={{ color: "#94a3b8", fontSize: "0.95rem", marginBottom: "24px" }}>
-              Search flights via Kayak & Trip.com
+              Live fares via Travelport. Kayak and Trip.com stay as compare options.
             </p>
 
             <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -511,13 +673,21 @@ function SearchAndAISection() {
                 style={inputStyle}
               />
 
-              <div style={{ display: "flex", gap: "10px", marginTop: "8px" }}>
+              <button
+                className="sj-btn primary"
+                onClick={handleClubSearch}
+                disabled={loading}
+              >
+                {loading ? "Searching…" : "Search club fares"}
+              </button>
+
+              <div style={{ display: "flex", gap: "10px" }}>
                 <button
-                  className="sj-btn primary"
+                  className="sj-btn ghost"
                   style={{ flex: 1 }}
                   onClick={() => handleClassicSearch("kayak")}
                 >
-                  Search on Kayak
+                  Compare on Kayak
                 </button>
                 <button
                   className="sj-btn ghost"
@@ -527,10 +697,38 @@ function SearchAndAISection() {
                   Trip.com
                 </button>
               </div>
+
+              {error && (
+                <p style={{ color: "#fca5a5", fontSize: "0.9rem", margin: 0 }}>{error}</p>
+              )}
+
+              {offers.length > 0 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
+                  {offers.map((offer) => (
+                    <div
+                      key={offer.id}
+                      style={{
+                        border: "1px solid #334155",
+                        borderRadius: "12px",
+                        padding: "12px 14px",
+                        color: "#e2e8f0",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: "12px" }}>
+                        <strong>{offer.route}</strong>
+                        <span style={{ color: "#DBB558" }}>{offer.price}</span>
+                      </div>
+                      <div style={{ color: "#e2e8f0", marginTop: "6px" }}>{offer.when}</div>
+                      <div style={{ color: "#94a3b8", fontSize: "0.85rem", marginTop: "4px" }}>
+                        {offer.flights} · {offer.stops}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* ===== CARD 2: AI Travel Assistant ===== */}
           <div
             style={{
               background: "#0f172a",
@@ -562,8 +760,9 @@ function SearchAndAISection() {
               className="sj-btn primary"
               style={{ width: "100%", marginTop: "16px" }}
               onClick={handleAISubmit}
+              disabled={loading}
             >
-              Get Ideas
+              {loading ? "Searching…" : "Get Ideas"}
             </button>
           </div>
         </div>
@@ -1155,6 +1354,11 @@ export default function App(): React.JSX.Element {
         <CryptoTransferSection />
         <BenefitsSection />
         <TravelAccessSection />
+        <ClubProgressJar
+  showDemoControls={true}
+  memberContribution={3}
+  memberEligible={true}
+/>
         <TiersSection onTierSelect={handleOpenJoin} /> 
         <FutureSection />
       </main>

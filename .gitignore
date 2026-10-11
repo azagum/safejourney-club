@@ -22,3 +22,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+node_modules
+dist
+.env
+.env.local
+.DS_Store
+*.log
+
+backend/.env
+backend/node_modules
+backend/tp-auth.json
+backend/tp-search.json
+backend/token.txt
+backend/search-body.json
