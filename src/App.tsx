@@ -7,6 +7,8 @@ import ClubProgressJar from "./components/ClubProgressJar";<ClubProgressJar
   memberEligible={true}/>
 import UaClubPage from "./UaClubPage";
 import InsuranceUaPage from "./InsuranceUa";
+import VitrinePage from "./VitrinePage";
+import CookieBanner from "./CookieBanner";
 import "./index.css";
 
 const features = [
@@ -312,7 +314,7 @@ function EsimSection(): React.JSX.Element {
               Unlock with Membership
             </a>
             <a
-              href="mailto:safej2013@gmail.com?subject=Safe%20Journey%20eSIM%20request"
+              href="mailto:info@safejourney.club?subject=Safe%20Journey%20eSIM%20request"
               className="sj-btn ghost"
               style={{ textDecoration: "none" }}
             >
@@ -817,7 +819,7 @@ function TravelAccessSection(): React.JSX.Element {
   const tripHotelsUrl = "https://www.trip.com/t/2uaIDWYHiS2";
 
   return (
-    <section className="sj-section sj-section-alt">
+    <section id="stays" className="sj-section sj-section-alt">
       <div className="sj-section-header">
         <h2>Stays</h2>
 <p>
@@ -1307,10 +1309,11 @@ function TermsModal({ isOpen, onClose, defaultTab = "TERMS" }: TermsModalProps):
 
 interface FooterProps {
   onOpenTerms: () => void;
-  onOpenPrivacy: () => void; // Додали правило для приватності
+  onOpenPrivacy: () => void;
+  onOpenCookies: () => void;
 }
 
-function Footer({ onOpenTerms, onOpenPrivacy }: FooterProps): React.JSX.Element {
+function Footer({ onOpenTerms, onOpenPrivacy, onOpenCookies }: FooterProps): React.JSX.Element {
   return (
     <footer className="sj-footer">
       <div className="sj-footer-inner">
@@ -1322,28 +1325,35 @@ function Footer({ onOpenTerms, onOpenPrivacy }: FooterProps): React.JSX.Element 
           <p className="sj-footer-text">Not a booking site. A members club for smarter, safer journeys.</p>
         </div>
         <div className="sj-footer-cols">
-          
           <div>
             <h4>Social</h4>
-            <a href="https://x.com" target="_blank" rel="noreferrer">X (Twitter)</a>
+            <a href="https://x.com/SAFEJOURNEYCLUB" target="_blank" rel="noreferrer">X (Twitter)</a>
           </div>
           <div>
             <h4>Legal</h4>
-            <a 
-              href="#terms" 
+            <a
+              href="#terms"
               onClick={(e) => { e.preventDefault(); window.location.hash = "terms"; onOpenTerms(); }}
               className="sj-footer-link-btn"
-              style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block', marginBottom: '8px', textDecoration: 'none' }}
+              style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", padding: 0, font: "inherit", textAlign: "left", display: "block", marginBottom: "8px", textDecoration: "none" }}
             >
               Terms of Service
             </a>
-            <a 
-              href="#privacy" 
+            <a
+              href="#privacy"
               onClick={(e) => { e.preventDefault(); window.location.hash = "privacy"; onOpenPrivacy(); }}
               className="sj-footer-link-btn"
-              style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, font: 'inherit', textAlign: 'left', display: 'block', textDecoration: 'none' }}
+              style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", padding: 0, font: "inherit", textAlign: "left", display: "block", marginBottom: "8px", textDecoration: "none" }}
             >
               Privacy Policy
+            </a>
+            <a
+              href="#cookies"
+              onClick={(e) => { e.preventDefault(); onOpenCookies(); }}
+              className="sj-footer-link-btn"
+              style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", padding: 0, font: "inherit", textAlign: "left", display: "block", textDecoration: "none" }}
+            >
+              Cookie Policy
             </a>
           </div>
           <div>
@@ -1369,23 +1379,53 @@ export default function App(): React.JSX.Element {
   const [isSignInOpen, setIsSignInOpen] = useState<boolean>(false);
   const [selectedTier, setSelectedTier] = useState<string>("Explorer");
   const [initialModalTab, setInitialModalTab] = useState<"TERMS" | "PRIVACY">("TERMS");
+  const [isCookieOpen, setIsCookieOpen] = useState(false);
+  const path = window.location.pathname;
+  if (path === "/" || path === "") {
+  return <VitrinePage />;
+}
+useEffect(() => {
+  const checkUrl = () => {
+    const hash = window.location.hash;
+    if (hash === "#privacy") {
+      setInitialModalTab("PRIVACY");
+      setIsTermsOpen(true);
+    } else if (hash === "#terms") {
+      setInitialModalTab("TERMS");
+      setIsTermsOpen(true);
+    }
 
-  useEffect(() => {
-    const checkUrlHash = () => {
-      const hash = window.location.hash;
-      if (hash === "#privacy") {
-        setInitialModalTab("PRIVACY");
-        setIsTermsOpen(true);
-      } else if (hash === "#terms") {
-        setInitialModalTab("TERMS");
-        setIsTermsOpen(true);
-      }
-    };
+    const params = new URLSearchParams(window.location.search);
+let changed = false;
+if (params.get("join") === "1") {
+  setIsJoinOpen(true);
+  params.delete("join");
+  changed = true;
+}
+if (params.get("signin") === "1") {
+  setIsSignInOpen(true);
+  params.delete("signin");
+  changed = true;
+}
+if (changed) {
+  const clean = params.toString();
+  const newUrl = window.location.pathname + (clean ? `?${clean}` : "") + window.location.hash;
+  window.history.replaceState({}, "", newUrl);
+}
 
-    checkUrlHash();
-    window.addEventListener("hashchange", checkUrlHash);
-    return () => window.removeEventListener("hashchange", checkUrlHash);
-  }, []);
+    if (hash && hash !== "#privacy" && hash !== "#terms") {
+      const id = hash.replace("#", "");
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
+  };
+
+  checkUrl();
+  window.addEventListener("hashchange", checkUrl);
+  return () => window.removeEventListener("hashchange", checkUrl);
+}, []);
 
   const handleOpenJoin = (tier: string) => {
     setSelectedTier(tier);
@@ -1424,16 +1464,47 @@ export default function App(): React.JSX.Element {
         <FutureSection />
       </main>
       
-      <Footer 
-        onOpenTerms={() => handleOpenTermsDirectly("TERMS")} 
-        onOpenPrivacy={() => handleOpenTermsDirectly("PRIVACY")} 
-      />
+      <Footer
+  onOpenTerms={() => handleOpenTermsDirectly("TERMS")}
+  onOpenPrivacy={() => handleOpenTermsDirectly("PRIVACY")}
+  onOpenCookies={() => setIsCookieOpen(true)}
+/>
       
       <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} defaultTab={initialModalTab} />
-      <JoinModal isOpen={isJoinOpen} onClose={() => setIsJoinOpen(false)} selectedTier={selectedTier} />
-      <SignInModal isOpen={isSignInOpen} onClose={() => setIsSignInOpen(false)} onSwitchToJoin={() => handleOpenJoin("Explorer")} />
+<JoinModal isOpen={isJoinOpen} onClose={() => setIsJoinOpen(false)} selectedTier={selectedTier} />
+<SignInModal isOpen={isSignInOpen} onClose={() => setIsSignInOpen(false)} onSwitchToJoin={() => handleOpenJoin("Explorer")} />
+
+<CookieBanner onOpenPolicy={() => setIsCookieOpen(true)} />
+
+{isCookieOpen && (
+  <div className="sj-modal-overlay" onClick={() => setIsCookieOpen(false)}>
+    <div
+      className="sj-modal-content"
+      onClick={(e) => e.stopPropagation()}
+      style={{ maxWidth: 560 }}
+    >
+      <div className="sj-modal-header">
+        <h3>Cookie Policy</h3>
+        <button className="sj-modal-close" onClick={() => setIsCookieOpen(false)}>
+          &times;
+        </button>
+      </div>
+      <div className="sj-modal-body" style={{ fontSize: 14, lineHeight: 1.6, color: "#a8b2d1" }}>
+        <p><strong>Last updated:</strong> October 11, 2026</p>
+        <p>Safe Journey Club Limited uses cookies only where needed to run this website.</p>
+        <h4>Essential cookies</h4>
+        <p>These remember your cookie choice and keep the site working. They cannot be turned off.</p>
+        <h4>What we do not do</h4>
+        <p>We do not sell your data. We do not use advertising cookies. Analytics, if added later, will be listed here and will be optional.</p>
+        <h4>Your choice</h4>
+        <p>By clicking Accept on the banner, you agree to essential cookies. You can clear site data in your browser at any time.</p>
+        <p>Questions: <a href="mailto:info@safejourney.club" style={{ color: "#c6a15b" }}>info@safejourney.club</a></p>
+      </div>
     </div>
-  );
+  </div>
+)}
+</div>
+);
 }
 
 interface JoinModalProps {
